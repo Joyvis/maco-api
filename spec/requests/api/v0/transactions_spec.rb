@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe "Transactions", type: :request do
   describe 'POST /transactions' do
-    before { post '/transactions', params: { transaction: params } }
+    before { post '/api/v0/transactions', params: { transaction: params } }
 
     context 'with valid params' do
       let(:params) do
         {
           amount: 100,
-          transaction_type: 'expense',
+          type: 'expense',
           due_date: Date.today,
           title: 'Groceries',
           description: 'Groceries for the week',
