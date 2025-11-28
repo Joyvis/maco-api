@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Transactions", type: :request do
-  describe 'POST /transactions' do
+  let(:parsed_response) { JSON.parse(response.body, symbolize_names: true) }
+  describe 'POST /api/v0/transactions' do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
     context 'with valid params' do
@@ -21,6 +22,14 @@ RSpec.describe "Transactions", type: :request do
         expect(Transaction.count).to eq(1)
       end
     end
+  end
 
+  describe 'GET /api/v0/transactions' do
+    before { get '/api/v0/transactions' }
+
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+      expect(parsed_response).to be_a(Array)
+    end
   end
 end

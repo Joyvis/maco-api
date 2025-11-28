@@ -1,5 +1,9 @@
 module Api::V0
   class TransactionsController < ApplicationController
+    def index
+      render json: Transaction.all
+    end
+
     def create
       transaction = klass_model.create!(transaction_params)
       render json: transaction, status: :created
