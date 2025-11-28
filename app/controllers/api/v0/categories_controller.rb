@@ -1,6 +1,8 @@
 class Api::V0::CategoriesController < ApplicationController
   def index
-    render json: Category.all
+    categories = Category.all
+    categories = categories.where('name LIKE ?', "%#{params[:name]}%") if params[:name]
+    render json: categories
   end
 
   def create

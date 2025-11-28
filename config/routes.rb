@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v0 do
       resources :transactions, only: [:create, :index, :destroy, :update]
-      resources :categories, only: [:create, :index, :destroy, :update]
+      resources :categories, only: [:create, :index, :destroy, :update], path: 'transaction_categories'
     end
   end
 end
