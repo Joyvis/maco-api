@@ -6,16 +6,7 @@ RSpec.describe "Transactions", type: :request do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
     context 'with valid params' do
-      let(:params) do
-        {
-          amount: 100,
-          type: 'expense',
-          due_date: Date.today,
-          title: 'Groceries',
-          description: 'Groceries for the week',
-          category_id: 'groceries',
-        }
-      end
+      let(:params) { attributes_for(:transaction, category_id: create(:category).id) }
 
       it 'returns http success' do
         expect(response).to have_http_status(:success)
@@ -25,25 +16,22 @@ RSpec.describe "Transactions", type: :request do
   end
 
   describe 'GET /api/v0/transactions' do
-    before { get '/api/v0/transactions' }
+    before do
+      create_list(:transaction, 3)
+      get '/api/v0/transactions'
+    end
 
     it 'returns http success' do
       expect(response).to have_http_status(:success)
       expect(parsed_response).to be_a(Array)
+      expect(parsed_response.count).to eq(3)
     end
   end
 
   describe 'DELETE /api/v0/transactions/:id' do
     let(:transaction) { create(:transaction) }
     let(:transaction) do
-      Expense.create!(
-        {
-          amount: 100,
-          due_date: Date.today,
-          description: 'Groceries for the week',
-          category_id: 'groceries',
-        }
-      )
+      create(:transaction)
     end
 
     before { delete "/api/v0/transactions/#{transaction.id}" }
@@ -55,16 +43,7 @@ RSpec.describe "Transactions", type: :request do
   end
 
   describe 'PATCH /api/v0/transactions/:id' do
-    let(:transaction) do
-      Expense.create!(
-        {
-          amount: 100,
-          due_date: Date.today,
-          description: 'Groceries for the week',
-          category_id: 'groceries',
-        }
-      )
-    end
+    let(:transaction) { create(:transaction) }
 
     before { patch "/api/v0/transactions/#{transaction.id}", params: { transaction: { amount: 200 } } }
 
