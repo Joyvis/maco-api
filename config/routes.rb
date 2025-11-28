@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v0 do
-      resources :transactions, only: [:create, :index]
+      resources :transactions, only: [:create, :index, :destroy, :update]
     end
   end
 end
