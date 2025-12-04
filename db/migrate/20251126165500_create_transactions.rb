@@ -6,7 +6,7 @@ class CreateTransactions < ActiveRecord::Migration[8.0]
       t.string :type, null: false
       t.date :due_date, null: false
       t.text :description
-      t.references :category, null: false
+      t.references :category, null: true
 
       t.timestamps
     end
