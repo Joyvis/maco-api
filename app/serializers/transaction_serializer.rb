@@ -1,5 +1,9 @@
 class TransactionSerializer < ActiveModel::Serializer
-  belongs_to :category
+  # belongs_to :category
 
-  attributes :id, :amount, :description, :due_date, :category, :type
+  attributes :id, :amount, :description, :due_date, :category_name, :type
+
+  def category_name
+    object.category.name
+  end
 end
