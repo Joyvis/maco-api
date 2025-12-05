@@ -33,7 +33,10 @@ RSpec.describe "Api::V0::transaction_categories", type: :request do
 
   describe "POST /api/v0/transaction_categories" do
     before do
-      post '/api/v0/transaction_categories', params: { category: { name: 'Groceries' } }
+      post '/api/v0/transaction_categories',
+        params: {
+          transaction_category: { name: 'Groceries' }
+        }
     end
 
     it 'creates a category' do
@@ -46,7 +49,10 @@ RSpec.describe "Api::V0::transaction_categories", type: :request do
     let(:category) { create(:category) }
 
     before do
-      patch "/api/v0/transaction_categories/#{category.id}", params: { category: { name: 'Groceries' } }
+      patch "/api/v0/transaction_categories/#{category.id}",
+        params: {
+          transaction_category: { name: 'Groceries' }
+        }
     end
 
     it 'updates a category' do

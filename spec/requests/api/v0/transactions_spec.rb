@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Transactions", type: :request do
   let(:parsed_response) { JSON.parse(response.body, symbolize_names: true) }
+
   describe 'POST /api/v0/transactions' do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
@@ -9,7 +10,7 @@ RSpec.describe "Transactions", type: :request do
       let(:params) { attributes_for(:transaction, category_id: create(:category).id) }
 
       it 'returns http success' do
-        expect(response).to have_http_status(:success)
+        expect(response).to have_http_status(:created)
         expect(Transaction.count).to eq(1)
       end
     end
