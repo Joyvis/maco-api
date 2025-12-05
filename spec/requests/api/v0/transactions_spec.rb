@@ -7,7 +7,7 @@ RSpec.describe "Transactions", type: :request do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
     context 'with valid params' do
-      let(:params) { attributes_for(:transaction, category_id: create(:category).id) }
+      let(:params) { attributes_for(:expense, category_id: create(:category).id) }
 
       it 'returns http success' do
         expect(response).to have_http_status(:created)
@@ -18,7 +18,7 @@ RSpec.describe "Transactions", type: :request do
 
   describe 'GET /api/v0/transactions' do
     before do
-      create_list(:transaction, 3)
+      create_list(:expense, 3)
       get '/api/v0/transactions'
     end
 
@@ -32,7 +32,7 @@ RSpec.describe "Transactions", type: :request do
   describe 'DELETE /api/v0/transactions/:id' do
     let(:transaction) { create(:transaction) }
     let(:transaction) do
-      create(:transaction)
+      create(:income)
     end
 
     before { delete "/api/v0/transactions/#{transaction.id}" }
@@ -44,7 +44,7 @@ RSpec.describe "Transactions", type: :request do
   end
 
   describe 'PATCH /api/v0/transactions/:id' do
-    let(:transaction) { create(:transaction) }
+    let(:transaction) { create(:income) }
 
     before { patch "/api/v0/transactions/#{transaction.id}", params: { transaction: { amount: 200 } } }
 

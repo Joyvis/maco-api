@@ -4,7 +4,7 @@ RSpec.describe Expense, type: :model do
   describe 'validations' do
     describe '#validate_category_percent' do
       # TODO: create an expense factory
-      let(:transaction_attrs) { attributes_for(:transaction, type: 'Expense', category_id: category.id) }
+      let(:transaction_attrs) { attributes_for(:expense, category_id: category.id) }
       let(:category) { create(:category, percent: percent) }
 
       context 'when category percent is present' do
