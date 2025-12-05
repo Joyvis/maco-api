@@ -22,12 +22,12 @@ end
 #
 # Table name: transactions
 #
-#  id          :integer          not null, primary key
+#  id          :uuid             not null, primary key
 #  amount      :decimal(, )      not null
 #  type        :string           not null
 #  due_date    :date             not null
 #  description :text
-#  category_id :integer
+#  category_id :uuid
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
