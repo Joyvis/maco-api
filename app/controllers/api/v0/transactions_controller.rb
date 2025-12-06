@@ -2,8 +2,8 @@ module Api::V0
   # TODO: break this controller into separate controllers for expenses and incomes
   class TransactionsController < ApplicationController
     def index
-      categories = Transaction.includes(:category).all
-      render json: categories, each_serializer: ::TransactionSerializer
+      transactions = Transaction.includes(:category).all
+      render json: transactions, each_serializer: ::TransactionSerializer
     end
 
     def create
