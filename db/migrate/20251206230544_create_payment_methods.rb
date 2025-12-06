@@ -6,5 +6,7 @@ class CreatePaymentMethods < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    PaymentMethod.create(name: 'Default', type: 'DebitAccount')
   end
 end
