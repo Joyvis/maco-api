@@ -1,4 +1,5 @@
 class PaymentMethod < ApplicationRecord
+  has_many :transactions
 end
 
 # == Schema Information
@@ -10,4 +11,5 @@ end
 #  type       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  balance    :float            not null
 #
