@@ -7,7 +7,7 @@ RSpec.describe "Transactions", type: :request do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
     context 'with valid params' do
-      let(:params) { attributes_for(:expense, category_id: create(:category).id) }
+      let(:params) { attributes_for(:expense) }
 
       it 'returns http success' do
         expect(response).to have_http_status(:created)
