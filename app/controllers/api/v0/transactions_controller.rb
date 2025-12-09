@@ -1,8 +1,6 @@
 module Api::V0
   # TODO: break this controller into separate controllers for expenses and incomes
   class TransactionsController < ApplicationController
-    rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessible_entity
-
     def index
       transactions = Transaction.includes(:category).all
       render json: transactions, each_serializer: ::TransactionSerializer
@@ -35,9 +33,6 @@ module Api::V0
 
     private
 
-    def render_unprocessible_entity(invalid)
-      render json: { errors: invalid.record.errors }, status: :unprocessable_entity
-    end
 
     def klass_model
       params[:transaction][:type] == 'expense' ? Expense : Income

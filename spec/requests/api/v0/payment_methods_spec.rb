@@ -17,12 +17,23 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
 
         # consider negative balance - Expense transaction
         it 'creates a payment method' do
+          # convert into a shared example
           expect(response).to have_http_status(:created)
           expect(DebitAccount.count).to eq(1)
           expect(parsed_response[:balance]).to eq(50)
           expect(Income.count).to eq(1)
           expect(income_transaction.amount).to eq(50)
           expect(income_transaction.description).to eq('Initial balance')
+        end
+      end
+
+      context 'with invalid params' do
+        let(:params) { { type: 'DebitAccount' } }
+
+        it 'returns a unprocessable entity response' do
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(parsed_response[:errors]).to be_present
+          expect(DebitAccount.count).to eq(0)
         end
       end
     end
