@@ -15,7 +15,7 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
         # consider negative balance - Expense transaction
         it 'creates a payment method' do
           expect(response).to have_http_status(:created)
-          # expect(PaymentMethod.count).to eq(1)
+          expect(DebitAccount.count).to eq(1)
           # expect(Income.count).to eq(1)
         end
       end
