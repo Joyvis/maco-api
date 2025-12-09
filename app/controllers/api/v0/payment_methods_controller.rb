@@ -26,6 +26,12 @@ class Api::V0::PaymentMethodsController < ApplicationController
     render json: payment_method
   end
 
+  def destroy
+    payment_method = DebitAccount.find(params[:id])
+    payment_method.destroy!
+    head :no_content
+  end
+
   private
 
   def payment_method_params

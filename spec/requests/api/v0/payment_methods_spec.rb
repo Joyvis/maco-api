@@ -70,4 +70,15 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
       expect(parsed_response[:name]).to eq('Groceries')
     end
   end
+
+  describe 'DELETE /api/v0/payment_methods/:id' do
+    let(:payment_method) { create(:payment_method) }
+
+    before { delete "/api/v0/payment_methods/#{payment_method.id}" }
+
+    it 'deletes a payment method' do
+      expect(response).to have_http_status(:no_content)
+      expect(DebitAccount.count).to eq(0)
+    end
+  end
 end
