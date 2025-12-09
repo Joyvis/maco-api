@@ -54,4 +54,20 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
       expect(parsed_response.size).to eq(2)
     end
   end
+
+  describe 'PATCH /api/v0/payment_methods/:id' do
+    let(:payment_method) { create(:payment_method) }
+
+    before do
+      patch "/api/v0/payment_methods/#{payment_method.id}",
+        params: {
+          payment_method: { name: 'Groceries' }
+        }
+    end
+
+    it 'updates a payment method' do
+      expect(response).to have_http_status(:success)
+      expect(parsed_response[:name]).to eq('Groceries')
+    end
+  end
 end

@@ -20,6 +20,12 @@ class Api::V0::PaymentMethodsController < ApplicationController
     render json: payment_method, status: :created
   end
 
+  def update
+    payment_method = DebitAccount.find(params[:id])
+    payment_method.update!(payment_method_params)
+    render json: payment_method
+  end
+
   private
 
   def payment_method_params
