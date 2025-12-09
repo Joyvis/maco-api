@@ -41,4 +41,17 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
     # context 'when payment method is CreditAccount' do
     # end
   end
+
+  describe 'GET /api/v0/payment_methods' do
+    before do
+      create_list(:payment_method, 2)
+      get '/api/v0/payment_methods'
+    end
+
+    it 'lists payment methods' do
+      expect(response).to have_http_status(:success)
+      expect(parsed_response).to be_a(Array)
+      expect(parsed_response.size).to eq(2)
+    end
+  end
 end

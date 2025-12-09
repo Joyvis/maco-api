@@ -1,4 +1,8 @@
 class Api::V0::PaymentMethodsController < ApplicationController
+  def index
+    render json: DebitAccount.all
+  end
+
   def create
     # persist payment method
     attributes = payment_method_params
