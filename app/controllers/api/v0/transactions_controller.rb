@@ -8,10 +8,13 @@ module Api::V0
 
     def create
       transaction = nil
+
       ActiveRecord::Base.transaction do
         transaction = klass_model.create!(transaction_params)
+        transaction_amount = transaction.amount
+        transaction_amount *= -1 if transaction.type == 'Income'
         transaction.payment_method.update!(
-          balance: transaction.payment_method.balance - transaction.amount
+          balance: transaction.payment_method.balance - transaction_amount
         )
       end
 
@@ -35,7 +38,7 @@ module Api::V0
 
 
     def klass_model
-      params[:transaction][:type] == 'expense' ? Expense : Income
+      params[:transaction][:type] == 'Expense' ? Expense : Income
     end
 
     def transaction_params
