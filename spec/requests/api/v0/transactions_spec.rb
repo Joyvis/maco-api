@@ -46,6 +46,16 @@ RSpec.describe "Transactions", type: :request do
             expect(PaymentMethod.find(payment_method.id).balance).to eq(105)
           end
         end
+
+        context 'when payment method has no balance' do
+          let(:payment_method) { create(:payment_method, balance: 0) }
+
+          it 'creates transaction and increments account balance' do
+            expect(response).to have_http_status(:created)
+            expect(Transaction.count).to eq(1)
+            expect(PaymentMethod.find(payment_method.id).balance).to eq(5)
+          end
+        end
       end
     end
   end
