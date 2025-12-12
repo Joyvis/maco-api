@@ -6,27 +6,45 @@ RSpec.describe "Transactions", type: :request do
   describe 'POST /api/v0/transactions' do
     before { post '/api/v0/transactions', params: { transaction: params } }
 
-    context 'with valid params' do
-      let(:params) { attributes_for(:expense, amount: 5, payment_method_id: payment_method.id) }
+    context 'with expense transactions' do
+      context 'with valid params' do
+        let(:params) { attributes_for(:expense, amount: 5, payment_method_id: payment_method.id) }
 
-      # TODO: move this scenarios to the proper place
-      context 'when payment method has balance' do
-        let(:payment_method) { create(:payment_method, balance: 100) }
+        # TODO: move this scenarios to the proper place
+        context 'when payment method has balance' do
+          let(:payment_method) { create(:payment_method, balance: 100) }
 
-        it 'returns http success' do
-          expect(response).to have_http_status(:created)
-          expect(Transaction.count).to eq(1)
-          expect(PaymentMethod.find(payment_method.id).balance).to eq(95)
+          it 'returns http success' do
+            expect(response).to have_http_status(:created)
+            expect(Transaction.count).to eq(1)
+            expect(PaymentMethod.find(payment_method.id).balance).to eq(95)
+          end
+        end
+
+        context 'when payment method has no balance' do
+          let(:payment_method) { create(:payment_method, balance: 0) }
+
+          it 'returns a unprocessable entity response' do
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(parsed_response[:errors]).to be_present
+            expect(Transaction.count).to eq(0)
+          end
         end
       end
+    end
 
-      context 'when payment method has no balance' do
-        let(:payment_method) { create(:payment_method, balance: 0) }
+    context 'with income transactions' do
+      context 'with valid params' do
+        let(:params) { attributes_for(:income, amount: 5, payment_method_id: payment_method.id) }
 
-        it 'returns a unprocessable entity response' do
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(parsed_response[:errors]).to be_present
-          expect(Transaction.count).to eq(0)
+        context 'when payment method has balance' do
+          let(:payment_method) { create(:payment_method, balance: 100) }
+
+          it 'creates transaction and increments account balance' do
+            expect(response).to have_http_status(:created)
+            expect(Transaction.count).to eq(1)
+            expect(PaymentMethod.find(payment_method.id).balance).to eq(105)
+          end
         end
       end
     end
