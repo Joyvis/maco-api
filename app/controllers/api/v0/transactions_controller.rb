@@ -11,8 +11,14 @@ module Api::V0
 
       ActiveRecord::Base.transaction do
         transaction = klass_model.create!(transaction_params)
+
         transaction_amount = transaction.amount
-        transaction_amount *= -1 if transaction.type == 'Income'
+        if transaction.payment_method.type == 'DebitAccount'
+          transaction_amount *= -1 if transaction.type == 'Income'
+        else
+          transaction_amount *= -1 if transaction.type == 'Expense'
+        end
+
         transaction.payment_method.update!(
           balance: transaction.payment_method.balance - transaction_amount
         )
