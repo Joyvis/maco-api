@@ -3,9 +3,6 @@ require 'rails_helper'
 RSpec.describe "Transactions", type: :request do
   let(:parsed_response) { JSON.parse(response.body, symbolize_names: true) }
 
-  RSpec.shared_examples "validate transactions" do |payment_method_type, expected_value|
-  end
-
   describe 'POST /api/v0/transactions' do
     describe "validating transactions for DebitAccount" do
       let(:payment_method_type) { :debit_account }
