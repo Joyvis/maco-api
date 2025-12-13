@@ -1,18 +1,17 @@
 require 'rails_helper'
 
+
 RSpec.describe "Transactions", type: :request do
   let(:parsed_response) { JSON.parse(response.body, symbolize_names: true) }
 
-  describe 'POST /api/v0/transactions' do
-    before { post '/api/v0/transactions', params: { transaction: params } }
-
+  RSpec.shared_examples "validate transactions" do |payment_method_type|
     context 'with expense transactions' do
       context 'with valid params' do
         let(:params) { attributes_for(:expense, amount: 5, payment_method_id: payment_method.id) }
 
         # TODO: move this scenarios to the proper place
         context 'when payment method has balance' do
-          let(:payment_method) { create(:payment_method, balance: 100) }
+          let(:payment_method) { create(payment_method_type, balance: 100) }
 
           it 'returns http success' do
             expect(response).to have_http_status(:created)
@@ -22,7 +21,7 @@ RSpec.describe "Transactions", type: :request do
         end
 
         context 'when payment method has no balance' do
-          let(:payment_method) { create(:payment_method, balance: 0) }
+          let(:payment_method) { create(payment_method_type, balance: 0) }
 
           it 'returns a unprocessable entity response' do
             expect(response).to have_http_status(:unprocessable_entity)
@@ -38,7 +37,7 @@ RSpec.describe "Transactions", type: :request do
         let(:params) { attributes_for(:income, amount: 5, payment_method_id: payment_method.id) }
 
         context 'when payment method has balance' do
-          let(:payment_method) { create(:payment_method, balance: 100) }
+          let(:payment_method) { create(payment_method_type, balance: 100) }
 
           it 'creates transaction and increments account balance' do
             expect(response).to have_http_status(:created)
@@ -48,7 +47,7 @@ RSpec.describe "Transactions", type: :request do
         end
 
         context 'when payment method has no balance' do
-          let(:payment_method) { create(:payment_method, balance: 0) }
+          let(:payment_method) { create(payment_method_type, balance: 0) }
 
           it 'creates transaction and increments account balance' do
             expect(response).to have_http_status(:created)
@@ -58,6 +57,12 @@ RSpec.describe "Transactions", type: :request do
         end
       end
     end
+  end
+
+  describe 'POST /api/v0/transactions' do
+    before { post '/api/v0/transactions', params: { transaction: params } }
+
+    include_examples "validate transactions", :debit_account
   end
 
   describe 'GET /api/v0/transactions' do
