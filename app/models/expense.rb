@@ -1,6 +1,10 @@
 class Expense < Transaction
   belongs_to :category
 
+  belongs_to :invoice, class: 'Expense', foreign_key: :invoice_id, optional: true
+
+  has_many :invoice_items, class_name: 'Expense', foreign_key: :invoice_id
+
   # VALIDATION:
   # when creating a transaction with a category that contains percent present
   # we need ensure that the sum of all category percent is equal to 100
