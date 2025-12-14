@@ -59,4 +59,32 @@ RSpec.describe Expense, type: :model do
       end
     end
   end
+
+  describe '#status' do
+    context 'when paid_at is nil' do
+      context 'and due_date is in the past' do
+        let(:expense) { create(:expense, :overdue) }
+
+        it 'returns :overdue' do
+          expect(expense.status).to eq(:overdue)
+        end
+      end
+
+      context 'and due_date is not in the past' do
+        let(:expense) { create(:expense) }
+
+        it 'returns :pending' do
+          expect(expense.status).to eq(:pending)
+        end
+      end
+    end
+
+    context 'when paid_at is not nil' do
+      let(:expense) { create(:expense, :paid) }
+
+      it 'returns :paid' do
+        expect(expense.status).to eq(:paid)
+      end
+    end
+  end
 end

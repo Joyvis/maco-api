@@ -6,6 +6,15 @@ FactoryBot.define do
     type { 'Expense' }
     category_id { create(:category).id }
     payment_method_id { create(:payment_method).id }
+    paid_at { nil }
+
+    trait :paid do
+      paid_at { Date.tomorrow }
+    end
+
+    trait :overdue do
+      due_date { Date.yesterday }
+    end
   end
 
   factory :income do
