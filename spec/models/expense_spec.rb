@@ -71,6 +71,10 @@ RSpec.describe Expense, type: :model do
           expect { expense }.to change(Expense, :count).by(1)
           expect(expense.category).to be_nil
         end
+
+        it 'returns true for persisted instances' do
+          expect(Expense.find(expense.id).is_invoice?).to be true
+        end
       end
 
       context 'and when is_invoice is false' do

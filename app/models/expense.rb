@@ -13,7 +13,11 @@ class Expense < Transaction
   validate :validate_category_percent,
     if: -> { category && category.percent.present? }
   validates :category, presence: true,
-    unless: -> { is_invoice == true }
+    unless: -> { is_invoice? }
+
+  def is_invoice?
+    is_invoice == true || (id.present? && category_id.nil?)
+  end
 
   def status
     return :paid if paid_at.present?
