@@ -15,6 +15,12 @@ FactoryBot.define do
     trait :overdue do
       due_date { Date.yesterday }
     end
+
+    trait :invoice_items do
+      after(:create) do |expense|
+        create_list(:expense, 2, invoice_id: expense.id)
+      end
+    end
   end
 
   factory :income do
