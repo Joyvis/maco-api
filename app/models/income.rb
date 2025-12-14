@@ -15,9 +15,11 @@ end
 #  updated_at        :datetime         not null
 #  payment_method_id :uuid             not null
 #  paid_at           :datetime
+#  invoice_id        :uuid
 #
 # Indexes
 #
 #  index_transactions_on_category_id        (category_id)
+#  index_transactions_on_invoice_id         (invoice_id)
 #  index_transactions_on_payment_method_id  (payment_method_id)
 #
