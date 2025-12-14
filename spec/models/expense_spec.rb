@@ -60,6 +60,45 @@ RSpec.describe Expense, type: :model do
     end
   end
 
+  describe '#is_invoice' do
+    context 'when is_invoice is present' do
+      let(:expense) { create(:expense, is_invoice: is_invoice, category_id: nil) }
+
+      context 'and when is_invoice is true' do
+        let(:is_invoice) { true }
+
+        it 'allows creating an expense without category' do
+          expect { expense }.to change(Expense, :count).by(1)
+          expect(expense.category).to be_nil
+        end
+      end
+
+      context 'and when is_invoice is false' do
+        let(:is_invoice) { false }
+
+        it 'does not allow creating an expense without category' do
+          expect { expense }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+
+      context 'and when is_invoice is not boolean' do
+        let(:is_invoice) { 'foobar' }
+
+        it 'does not allow creating an expense without category' do
+          expect { expense }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+
+    context 'when is_invoice is not present' do
+      let(:expense) { create(:expense, category_id: nil) }
+
+      it 'does not allow creating an expense without category' do
+        expect { expense }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
+
   describe '#status' do
     context 'when paid_at is nil' do
       context 'and due_date is in the past' do
