@@ -1,11 +1,23 @@
 class Expense < Transaction
-  belongs_to :category
+  attr_accessor :is_invoice
+
+  belongs_to :category, optional: true
+
+  belongs_to :invoice, class_name: 'Expense', foreign_key: :invoice_id, optional: true
+
+  has_many :invoice_items, class_name: 'Expense', foreign_key: :invoice_id
 
   # VALIDATION:
   # when creating a transaction with a category that contains percent present
   # we need ensure that the sum of all category percent is equal to 100
-  validate :validate_category_percent
-  validates :category, presence: true
+  validate :validate_category_percent,
+    if: -> { category && category.percent.present? }
+  validates :category, presence: true,
+    unless: -> { is_invoice? }
+
+  def is_invoice?
+    is_invoice == true || (id.present? && category_id.nil?)
+  end
 
   def status
     return :paid if paid_at.present?
@@ -18,8 +30,6 @@ class Expense < Transaction
   private
 
   def validate_category_percent
-    return if category.percent.nil?
-
     total = Category.where.not(percent: nil).sum(:percent)
     errors.add(:category, 'category percentages must sum to 100') if total != 100
   end
@@ -39,9 +49,11 @@ end
 #  updated_at        :datetime         not null
 #  payment_method_id :uuid             not null
 #  paid_at           :datetime
+#  invoice_id        :uuid
 #
 # Indexes
 #
 #  index_transactions_on_category_id        (category_id)
+#  index_transactions_on_invoice_id         (invoice_id)
 #  index_transactions_on_payment_method_id  (payment_method_id)
 #

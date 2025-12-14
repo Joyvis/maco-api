@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_14_140525) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_14_144047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -40,9 +40,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_14_140525) do
     t.datetime "updated_at", null: false
     t.uuid "payment_method_id", null: false
     t.datetime "paid_at"
+    t.uuid "invoice_id"
     t.index ["category_id"], name: "index_transactions_on_category_id"
+    t.index ["invoice_id"], name: "index_transactions_on_invoice_id"
     t.index ["payment_method_id"], name: "index_transactions_on_payment_method_id"
   end
 
   add_foreign_key "transactions", "categories"
+  add_foreign_key "transactions", "transactions", column: "invoice_id"
 end
