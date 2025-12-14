@@ -31,6 +31,7 @@ end
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  payment_method_id :uuid             not null
+#  paid_at           :datetime
 #
 # Indexes
 #
