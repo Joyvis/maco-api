@@ -10,12 +10,10 @@ class Expense < Transaction
   # VALIDATION:
   # when creating a transaction with a category that contains percent present
   # we need ensure that the sum of all category percent is equal to 100
-  validate :validate_category_percent
-  validates :category, presence: true, unless: :is_invoice?
-
-  def is_invoice?
-    is_invoice == true
-  end
+  validate :validate_category_percent,
+    if: -> { category && category.percent.present? }
+  validates :category, presence: true,
+    unless: -> { is_invoice == true }
 
   def status
     return :paid if paid_at.present?
@@ -28,8 +26,6 @@ class Expense < Transaction
   private
 
   def validate_category_percent
-    return if category.nil? || category.percent.nil?
-
     total = Category.where.not(percent: nil).sum(:percent)
     errors.add(:category, 'category percentages must sum to 100') if total != 100
   end
