@@ -1,12 +1,19 @@
 class Expense < Transaction
   belongs_to :category
 
-  validates :category, presence: true
-
   # VALIDATION:
   # when creating a transaction with a category that contains percent present
   # we need ensure that the sum of all category percent is equal to 100
   validate :validate_category_percent
+  validates :category, presence: true
+
+  def status
+    return :paid if paid_at.present?
+
+    return :overdue if due_date < Date.today
+
+    :pending
+  end
 
   private
 
