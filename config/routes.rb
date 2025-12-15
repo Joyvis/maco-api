@@ -9,7 +9,9 @@ Rails.application.routes.draw do
     namespace :v0 do
       resources :transactions, only: [:create, :index, :destroy, :update]
       resources :categories, only: [:create, :index, :destroy, :update], path: 'transaction_categories'
-      resources :payment_methods, only: [:create, :index, :destroy, :update]
+      resources :payment_methods, only: [:create, :index, :destroy, :update] do
+        resources :invoices, only: :create, controller: 'payment_methods/invoices'
+      end
     end
   end
 end
