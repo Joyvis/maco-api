@@ -21,9 +21,10 @@ RSpec.describe "Api::V0::PaymentMethods::Invoices", type: :request do
 
     context 'when payment method is CreditAccount' do
       let(:payment_method) { create(:credit_account, :with_expenses) }
-      let(:params) { { due_date: Date.today, amount: 2 } }
 
       context 'with valid params' do
+        let(:params) { { due_date: Date.today, amount: 2 } }
+
         it 'creates an invoice' do
           expect(response).to have_http_status(:created)
           total_amount = parsed_response[:invoice_items].sum { |t| t[:amount].to_f }
@@ -34,7 +35,10 @@ RSpec.describe "Api::V0::PaymentMethods::Invoices", type: :request do
       end
 
       context 'with invalid params' do
+        let(:params) { { due_date: Date.today, amount: 3 } }
+
         it 'returns an error response' do
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
