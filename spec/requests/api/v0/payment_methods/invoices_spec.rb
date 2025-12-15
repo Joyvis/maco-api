@@ -15,6 +15,7 @@ RSpec.describe "Api::V0::PaymentMethods::Invoices", type: :request do
       let(:payment_method) { create(:debit_account) }
 
       it 'returns an error response' do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
