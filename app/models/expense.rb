@@ -1,31 +1,16 @@
 class Expense < Transaction
-  attr_accessor :is_invoice
+  include HasStatus
 
-  belongs_to :category, optional: true
+  belongs_to :category
 
-  belongs_to :invoice, class_name: 'Expense', foreign_key: :invoice_id, optional: true
-
-  has_many :invoice_items, class_name: 'Expense', foreign_key: :invoice_id
+  belongs_to :invoice, foreign_key: :invoice_id, optional: true
 
   # VALIDATION:
   # when creating a transaction with a category that contains percent present
   # we need ensure that the sum of all category percent is equal to 100
   validate :validate_category_percent,
     if: -> { category && category.percent.present? }
-  validates :category, presence: true,
-    unless: -> { is_invoice? }
-
-  def is_invoice?
-    is_invoice == true || (id.present? && category_id.nil?)
-  end
-
-  def status
-    return :paid if paid_at.present?
-
-    return :overdue if due_date < Date.today
-
-    :pending
-  end
+  validates :category, presence: true
 
   private
 

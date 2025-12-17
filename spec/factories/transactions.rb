@@ -16,11 +16,6 @@ FactoryBot.define do
       due_date { Date.yesterday }
     end
 
-    trait :invoice_items do
-      after(:create) do |expense|
-        create_list(:expense, 2, invoice_id: expense.id)
-      end
-    end
   end
 
   factory :income do
@@ -29,5 +24,18 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
     type { 'Income' }
     payment_method_id { create(:payment_method).id }
+  end
+
+  factory :invoice do
+    amount { 2.00 }
+    due_date { Date.today }
+    description { Faker::Lorem.sentence }
+    type { 'Invoice' }
+    payment_method_id { create(:payment_method).id }
+    trait :invoice_items do
+      after(:create) do |invoice|
+        create_list(:expense, 2, invoice_id: invoice.id)
+      end
+    end
   end
 end

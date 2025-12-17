@@ -6,14 +6,13 @@ class Api::V0::PaymentMethods::InvoicesController < ApplicationController
     ActiveRecord::Base.transaction do
       expenses = payment_method.transactions.where(type: 'Expense', invoice_id: nil)
       invoice = create_invoice
-      expenses = expenses.where.not(id: invoice.id)
       raise ActiveRecord::RecordInvalid.new(invoice) if expenses.sum(:amount) != invoice.amount
 
       expenses.update!(invoice_id: invoice.id)
       invoice.reload
 
       render json: invoice,
-        status: :created, serializer: ::ExpenseSerializer
+        status: :created, serializer: ::InvoiceSerializer
     end
   end
 
@@ -22,8 +21,7 @@ class Api::V0::PaymentMethods::InvoicesController < ApplicationController
   def create_invoice
     attrs = invoice_params.merge(payment_method_id: payment_method.id)
     attrs[:description] = "#{payment_method.name} Invoice"
-    attrs[:is_invoice] = true
-    Expense.create!(attrs)
+    Invoice.create!(attrs)
   end
 
   def payment_method
