@@ -1,5 +1,22 @@
 class Transaction < ApplicationRecord
   belongs_to :payment_method
+  after_create :update_payment_method_balance
+
+  private
+
+  def update_payment_method_balance
+    # THERE IS SOMETHING WRONG WITH THIS LOGIC lol
+    transaction_amount = amount
+    if payment_method.type == 'DebitAccount'
+      transaction_amount *= -1 if type == 'Income'
+    else
+      transaction_amount *= -1 if type == 'Expense'
+    end
+
+    payment_method.update!(
+      balance: payment_method.balance - transaction_amount
+    )
+  end
 end
 
 # == Schema Information
