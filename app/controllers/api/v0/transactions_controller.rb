@@ -24,8 +24,11 @@ module Api::V0
       head :no_content
     end
 
-    private
+    def monthly_summary
+      render json: {}, status: :ok
+    end
 
+    private
 
     def klass_model
       params[:transaction][:type] == 'Expense' ? Expense : Income

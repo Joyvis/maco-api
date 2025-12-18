@@ -164,4 +164,13 @@ RSpec.describe "Transactions", type: :request do
       expect(parsed_response[:amount]).to eq '200.0'
     end
   end
+
+  describe 'GET /api/v0/transactions/monthly_summary' do
+    before { get '/api/v0/transactions/monthly_summary' }
+
+    # Expected response: { total: 0, transactions: [] }
+    it 'returns http success' do
+      expect(response).to have_http_status(:success)
+    end
+  end
 end
