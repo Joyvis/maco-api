@@ -24,8 +24,14 @@ module Api::V0
       head :no_content
     end
 
+    # TODO: rename to summary
     def monthly_summary
-      transactions = Transaction.where(invoice_id: nil).all
+      transactions = Transaction.where(invoice_id: nil)
+
+      if params[:month]
+        transactions = transactions.where('extract(month from due_date) = ?', params[:month])
+      end
+
       render json: {
         total: calculate_total,
         transactions: serialized_resources(transactions)

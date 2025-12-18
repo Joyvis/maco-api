@@ -64,7 +64,6 @@ RSpec.describe "Transactions", type: :request do
       end
     end
 
-
     describe "validating transactions for CreditAccount" do
       let(:payment_method_type) { :credit_account }
       let(:amount) { 5 }
@@ -166,10 +165,12 @@ RSpec.describe "Transactions", type: :request do
   end
 
   describe 'GET /api/v0/transactions/monthly_summary' do
+    let(:query_params) { '' }
+
     before do
       transactions
 
-      get '/api/v0/transactions/monthly_summary'
+      get "/api/v0/transactions/monthly_summary#{query_params}"
     end
 
     RSpec.shared_examples 'monthly_summary_response' do
@@ -228,6 +229,24 @@ RSpec.describe "Transactions", type: :request do
         it 'returns http success' do
           expect(parsed_response[:total].to_f).to eq(1.0)
           expect(parsed_response[:transactions].count).to eq(13)
+        end
+      end
+
+      context 'when filtering data' do
+        let(:query_params) { "?month=#{Date.today.month}" }
+
+        let(:transactions) do
+          create_list(:income, 3, amount: 1, due_date: Date.today-1.month)
+          create_list(:expense, 3, amount: 1, due_date: Date.today-1.month)
+          create_list(:income, 3, amount: 1)
+          create_list(:expense, 3, amount: 1)
+        end
+
+        include_examples "monthly_summary_response"
+
+        it 'returns filtered data' do
+          expect(parsed_response[:total].to_f).to eq(0.0)
+          expect(parsed_response[:transactions].count).to eq(6)
         end
       end
     end
