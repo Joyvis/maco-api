@@ -166,12 +166,70 @@ RSpec.describe "Transactions", type: :request do
   end
 
   describe 'GET /api/v0/transactions/monthly_summary' do
-    before { get '/api/v0/transactions/monthly_summary' }
+    before do
+      transactions
 
-    # Expected response: { total: 0, transactions: [] }
-    it 'returns http success' do
-      expect(response).to have_http_status(:success)
-      expect(parsed_response.keys).to contain_exactly(:total, :transactions)
+      get '/api/v0/transactions/monthly_summary'
+    end
+
+    RSpec.shared_examples 'monthly_summary_response' do
+      it 'returns http success' do
+        expect(response).to have_http_status(:success)
+        expect(parsed_response.keys).to contain_exactly(:total, :transactions)
+        expect(parsed_response[:total].to_f).to be_a(Float)
+        expect(parsed_response[:transactions]).to be_a(Array)
+      end
+    end
+
+    context 'when transactions exist' do
+      context 'with only expense transactions' do
+        let(:transactions) { create_list(:expense, 3, amount: 1) }
+
+        include_examples "monthly_summary_response"
+
+        it 'returns http success' do
+          expect(parsed_response[:total].to_f).to eq(-3.0)
+          expect(parsed_response[:transactions].count).to eq(3)
+        end
+      end
+
+      context 'with only income transactions' do
+        let(:transactions) { create_list(:income, 3, amount: 1) }
+
+        include_examples "monthly_summary_response"
+
+        it 'returns http success' do
+          expect(parsed_response[:total].to_f).to eq(3.0)
+          expect(parsed_response[:transactions].count).to eq(3)
+        end
+      end
+
+      context 'with only invoice transactions' do
+        let(:transactions) { create_list(:invoice, 3, :invoice_items, amount: 1) }
+
+        include_examples "monthly_summary_response"
+
+        it 'returns http success' do
+          expect(parsed_response[:total].to_f).to eq(-3.0)
+          expect(parsed_response[:transactions].count).to eq(3)
+          expect(parsed_response[:transactions].first[:invoice_items].count).to eq(2)
+        end
+      end
+
+      context 'with all kind of transactions' do
+        let(:transactions) do
+          create_list(:expense, 3, amount: 1) +
+            create_list(:income, 7, amount: 1) +
+            create_list(:invoice, 3, :invoice_items, amount: 1)
+        end
+
+        include_examples "monthly_summary_response"
+
+        it 'returns http success' do
+          expect(parsed_response[:total].to_f).to eq(1.0)
+          expect(parsed_response[:transactions].count).to eq(13)
+        end
+      end
     end
   end
 end

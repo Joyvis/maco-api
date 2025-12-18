@@ -25,10 +25,24 @@ module Api::V0
     end
 
     def monthly_summary
-      render json: { total: 0, transactions: [] }, status: :ok
+      transactions = Transaction.where(invoice_id: nil).all
+      render json: {
+        total: calculate_total,
+        transactions: serialized_resources(transactions)
+      }, status: :ok
     end
 
     private
+
+    def serialized_resources(resources)
+      ActiveModelSerializers::SerializableResource.new(resources)
+    end
+
+    def calculate_total
+      @calculate_total = Income.sum(:amount)
+      @calculate_total -= Expense.where(invoice_id: nil).sum(:amount)
+      @calculate_total -= Invoice.sum(:amount)
+    end
 
     def klass_model
       params[:transaction][:type] == 'Expense' ? Expense : Income
