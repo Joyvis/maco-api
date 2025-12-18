@@ -25,7 +25,7 @@ module Api::V0
     end
 
     def monthly_summary
-      render json: {}, status: :ok
+      render json: { total: 0, transactions: [] }, status: :ok
     end
 
     private

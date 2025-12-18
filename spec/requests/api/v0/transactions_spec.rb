@@ -171,6 +171,7 @@ RSpec.describe "Transactions", type: :request do
     # Expected response: { total: 0, transactions: [] }
     it 'returns http success' do
       expect(response).to have_http_status(:success)
+      expect(parsed_response.keys).to contain_exactly(:total, :transactions)
     end
   end
 end
