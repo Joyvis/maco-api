@@ -75,15 +75,6 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
       
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h postgres -p 5432 -U postgres; do
-            echo "Waiting for postgres..."
-            sleep 2
-          done
-        env:
-          PGPASSWORD: postgres
-
       - name: Run tests
         env:
           RAILS_ENV: test
@@ -93,7 +84,6 @@ jobs:
           DATABASE_PORT: 5432
           # REDIS_URL: redis://localhost:6379/0
         run: |
-          bundle install
           bundle exec rake db:create db:migrate
           bundle exec rspec
           
