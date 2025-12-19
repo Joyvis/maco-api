@@ -85,4 +85,4 @@ jobs:
           # REDIS_URL: redis://localhost:6379/0
         run: |
           bin/rails db:test:prepare
-          bundle exec rspec spec --format documentation
+          bundle exec rspec spec
