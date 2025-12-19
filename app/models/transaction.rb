@@ -7,10 +7,10 @@ class Transaction < ApplicationRecord
   def update_payment_method_balance
     # THERE IS SOMETHING WRONG WITH THIS LOGIC lol
     transaction_amount = amount
-    if payment_method.type == 'DebitAccount'
-      transaction_amount *= -1 if type == 'Income'
+    if payment_method.type == "DebitAccount"
+      transaction_amount *= -1 if type == "Income"
     else
-      transaction_amount *= -1 if type == 'Expense'
+      transaction_amount *= -1 if type == "Expense"
     end
 
     payment_method.update!(

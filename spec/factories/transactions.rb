@@ -15,7 +15,6 @@ FactoryBot.define do
     trait :overdue do
       due_date { Date.yesterday }
     end
-
   end
 
   factory :income do

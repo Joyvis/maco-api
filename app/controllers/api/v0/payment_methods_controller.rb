@@ -13,7 +13,7 @@ class Api::V0::PaymentMethodsController < ApplicationController
     Income.create!(
       amount: params[:payment_method][:initial_balance],
       due_date: Date.current,
-      description: 'Initial balance',
+      description: "Initial balance",
       payment_method_id: payment_method.id
     )
 

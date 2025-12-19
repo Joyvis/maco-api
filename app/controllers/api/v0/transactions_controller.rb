@@ -29,7 +29,7 @@ module Api::V0
       transactions = Transaction.where(invoice_id: nil)
 
       if params[:month]
-        transactions = transactions.where('extract(month from due_date) = ?', params[:month])
+        transactions = transactions.where("extract(month from due_date) = ?", params[:month])
       end
 
       render json: {
@@ -51,7 +51,7 @@ module Api::V0
     end
 
     def klass_model
-      params[:transaction][:type] == 'Expense' ? Expense : Income
+      params[:transaction][:type] == "Expense" ? Expense : Income
     end
 
     def transaction_params

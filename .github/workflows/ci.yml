@@ -40,7 +40,22 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # services:
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     #  redis:
     #    image: redis
     #    ports:
@@ -62,5 +77,11 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          DATABASE_HOST: 0.0.0.0
+          DATABASE_PORT: 5432
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: postgres
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test
+        run: |
+          bin/rails db:test:prepare
+          bundle exec rspec spec

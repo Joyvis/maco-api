@@ -4,6 +4,6 @@ class TransactionSerializer < ActiveModel::Serializer
   attributes :id, :amount, :description, :due_date, :category_name, :type
 
   def category_name
-    object.category.name if object.type == 'Expense'
+    object.category.name if object.type == "Expense"
   end
 end
