@@ -89,7 +89,7 @@ jobs:
           RAILS_ENV: test
           DATABASE_USERNAME: postgres
           DATABASE_PASSWORD: postgres
-          DATABASE_HOST: postgres
+          DATABASE_HOST: 0.0.0.0
           DATABASE_PORT: 5432
           # REDIS_URL: redis://localhost:6379/0
         run: |
