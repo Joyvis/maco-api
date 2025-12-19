@@ -55,6 +55,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
     #  redis:
     #    image: redis
     #    ports:
@@ -77,5 +79,8 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_HOST: 0.0.0.0
+          DATABASE_PORT: 5432
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: postgres
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
