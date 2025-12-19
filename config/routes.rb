@@ -7,12 +7,12 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v0 do
-      resources :transactions, only: [:create, :index, :destroy, :update]
-      get 'transactions/monthly_summary', to: 'transactions#monthly_summary'
+      resources :transactions, only: [ :create, :index, :destroy, :update ]
+      get "transactions/monthly_summary", to: "transactions#monthly_summary"
 
-      resources :categories, only: [:create, :index, :destroy, :update], path: 'transaction_categories'
-      resources :payment_methods, only: [:create, :index, :destroy, :update] do
-        resources :invoices, only: :create, controller: 'payment_methods/invoices'
+      resources :categories, only: [ :create, :index, :destroy, :update ], path: "transaction_categories"
+      resources :payment_methods, only: [ :create, :index, :destroy, :update ] do
+        resources :invoices, only: :create, controller: "payment_methods/invoices"
       end
     end
   end

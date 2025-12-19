@@ -16,7 +16,7 @@ class Expense < Transaction
 
   def validate_category_percent
     total = Category.where.not(percent: nil).sum(:percent)
-    errors.add(:category, 'category percentages must sum to 100') if total != 100
+    errors.add(:category, "category percentages must sum to 100") if total != 100
   end
 end
 

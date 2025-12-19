@@ -4,7 +4,7 @@ class Api::V0::PaymentMethods::InvoicesController < ApplicationController
     # create invoice transaction
     # associate invoice to all transactions
     ActiveRecord::Base.transaction do
-      expenses = payment_method.transactions.where(type: 'Expense', invoice_id: nil)
+      expenses = payment_method.transactions.where(type: "Expense", invoice_id: nil)
       invoice = create_invoice
       raise ActiveRecord::RecordInvalid.new(invoice) if expenses.sum(:amount) != invoice.amount
 
