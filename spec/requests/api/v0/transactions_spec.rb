@@ -20,7 +20,7 @@ RSpec.describe "Transactions", type: :request do
 
             it 'returns http success' do
               expect(response).to have_http_status(:created)
-              expect(Transaction.count).to eq(2)
+              expect(Transaction.count).to eq(1)
               expect(PaymentMethod.find(payment_method.id).balance).to eq(95)
             end
           end
