@@ -214,6 +214,9 @@ RSpec.describe "Transactions", type: :request do
           expect(parsed_response[:total].to_f).to eq(-3.0)
           expect(parsed_response[:transactions].count).to eq(3)
           expect(parsed_response[:transactions].first[:invoice_items].count).to eq(2)
+          parsed_response[:transactions].first[:invoice_items].each do |invoice_item|
+            expect(invoice_item.keys).not_to include(:status)
+          end
         end
       end
 
