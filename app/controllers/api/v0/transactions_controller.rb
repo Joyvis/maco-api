@@ -52,7 +52,7 @@ module Api::V0
     end
 
     def klass_model
-      params[:transaction][:type] == "expense" ? Expense : Income
+      params[:transaction][:type].downcase == "expense" ? Expense : Income
     end
 
     def transaction_params
