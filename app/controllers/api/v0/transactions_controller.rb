@@ -34,6 +34,7 @@ module Api::V0
 
       render json: {
         total: calculate_total,
+        pending: "0.00",
         transactions: serialized_resources(transactions)
       }, status: :ok
     end
@@ -51,7 +52,7 @@ module Api::V0
     end
 
     def klass_model
-      params[:transaction][:type] == "Expense" ? Expense : Income
+      params[:transaction][:type].downcase == "expense" ? Expense : Income
     end
 
     def transaction_params

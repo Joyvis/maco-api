@@ -1,5 +1,5 @@
 class ExpenseSerializer < ActiveModel::Serializer
-  attributes :id, :amount, :description, :due_date, :category_name, :type
+  attributes :id, :amount, :description, :due_date, :category_name, :type, :paid_at
   attribute :status, if: -> { object.invoice_id.nil? }
 
   def category_name

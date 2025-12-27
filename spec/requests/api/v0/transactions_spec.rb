@@ -176,7 +176,7 @@ RSpec.describe "Transactions", type: :request do
     RSpec.shared_examples 'monthly_summary_response' do
       it 'returns http success' do
         expect(response).to have_http_status(:success)
-        expect(parsed_response.keys).to contain_exactly(:total, :transactions)
+        expect(parsed_response.keys).to contain_exactly(:total, :transactions, :pending)
         expect(parsed_response[:total].to_f).to be_a(Float)
         expect(parsed_response[:transactions]).to be_a(Array)
       end
