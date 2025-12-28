@@ -184,7 +184,7 @@ RSpec.describe "Transactions", type: :request do
 
     context 'when transactions exist' do
       context 'with only expense transactions' do
-        let(:transactions) { create_list(:expense, 3, amount: 1) }
+        let(:transactions) { create_list(:expense, 3, :paid, amount: 1) }
 
         include_examples "monthly_summary_response"
 
@@ -206,7 +206,7 @@ RSpec.describe "Transactions", type: :request do
       end
 
       context 'with only invoice transactions' do
-        let(:transactions) { create_list(:invoice, 3, :invoice_items, amount: 1) }
+        let(:transactions) { create_list(:invoice, 3, :paid, :invoice_items, amount: 1) }
 
         include_examples "monthly_summary_response"
 
@@ -222,16 +222,21 @@ RSpec.describe "Transactions", type: :request do
 
       context 'with all kind of transactions' do
         let(:transactions) do
-          create_list(:expense, 3, amount: 1) +
+          create_list(:expense, 3, :paid, amount: 1) +
             create_list(:income, 7, amount: 1) +
-            create_list(:invoice, 3, :invoice_items, amount: 1)
+            create_list(:invoice, 3, :paid, :invoice_items, amount: 1) +
+            create_list(:expense, 3, amount: 1)
         end
 
         include_examples "monthly_summary_response"
 
         it 'returns http success' do
           expect(parsed_response[:total].to_f).to eq(1.0)
-          expect(parsed_response[:transactions].count).to eq(13)
+          expect(parsed_response[:transactions].count).to eq(16)
+        end
+
+        it 'validates pending transactions' do
+          expect(parsed_response[:pending].to_f).to eq(3.0)
         end
       end
 
@@ -240,9 +245,9 @@ RSpec.describe "Transactions", type: :request do
 
         let(:transactions) do
           create_list(:income, 3, amount: 1, due_date: Date.today-1.month)
-          create_list(:expense, 3, amount: 1, due_date: Date.today-1.month)
+          create_list(:expense, 3, :paid, amount: 1, due_date: Date.today-1.month)
           create_list(:income, 3, amount: 1)
-          create_list(:expense, 3, amount: 1)
+          create_list(:expense, 3, :paid, amount: 1)
         end
 
         include_examples "monthly_summary_response"
