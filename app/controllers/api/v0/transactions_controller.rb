@@ -64,7 +64,7 @@ module Api::V0
       params
         .require(:transaction)
         .permit(
-          :amount, :description, :category_id, :due_date, :payment_method_id
+          :amount, :description, :category_id, :due_date, :payment_method_id, :paid_at
         )
     end
   end
