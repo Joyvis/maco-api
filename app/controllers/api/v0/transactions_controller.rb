@@ -34,7 +34,7 @@ module Api::V0
 
       render json: {
         total: calculate_total,
-        pending: "0.00",
+        pending: calculate_pending,
         transactions: serialized_resources(transactions)
       }, status: :ok
     end
@@ -47,8 +47,13 @@ module Api::V0
 
     def calculate_total
       @calculate_total = Income.sum(:amount)
-      @calculate_total -= Expense.where(invoice_id: nil).sum(:amount)
-      @calculate_total -= Invoice.sum(:amount)
+      @calculate_total -= Expense.paid.where(invoice_id: nil).sum(:amount)
+      @calculate_total -= Invoice.paid.sum(:amount)
+    end
+
+    def calculate_pending
+      @calculate_pending = Expense.not_paid.where(invoice_id: nil).sum(:amount)
+      @calculate_pending += Invoice.not_paid.sum(:amount)
     end
 
     def klass_model

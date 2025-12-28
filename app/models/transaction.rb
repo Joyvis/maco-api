@@ -2,6 +2,9 @@ class Transaction < ApplicationRecord
   belongs_to :payment_method
   after_create :update_payment_method_balance
 
+  scope :paid, -> { where.not(paid_at: nil) }
+  scope :not_paid, -> { where(paid_at: nil) }
+
   private
 
   def update_payment_method_balance

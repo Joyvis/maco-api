@@ -9,7 +9,7 @@ FactoryBot.define do
     paid_at { nil }
 
     trait :paid do
-      paid_at { Date.tomorrow }
+      paid_at { Date.today }
     end
 
     trait :overdue do
@@ -31,6 +31,10 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
     type { 'Invoice' }
     payment_method_id { create(:payment_method).id }
+    trait :paid do
+      paid_at { Date.today }
+    end
+
     trait :invoice_items do
       after(:create) do |invoice|
         create_list(:expense, 2, invoice_id: invoice.id)
