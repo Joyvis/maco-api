@@ -16,5 +16,9 @@ Rails.application.routes.draw do
         resources :invoices, only: :create, controller: "payment_methods/invoices"
       end
     end
+
+    namespace :v1 do
+      resources :transactions, only: :index
+    end
   end
 end
