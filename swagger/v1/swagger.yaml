@@ -12,6 +12,40 @@ paths:
       responses:
         '200':
           description: Transactions found
+    post:
+      summary: Create Expense Transaction
+      tags:
+      - Expense Transactions
+      parameters: []
+      responses:
+        '201':
+          description: expense transaction created
+        '422':
+          description: expense transaction not created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                amount:
+                  type: number
+                due_date:
+                  type: string
+                payment_method_id:
+                  type: string
+                category_id:
+                  type: string
+                paid_at:
+                  type: string
+              required:
+              - description
+              - amount
+              - due_date
+              - payment_method_id
+              - category_id
 servers:
 - url: https://{defaultHost}
   variables:
