@@ -12,6 +12,33 @@ paths:
       responses:
         '200':
           description: Transactions found
+    post:
+      summary: Create Income Transaction
+      tags:
+      - Income Transactions
+      parameters: []
+      responses:
+        '201':
+          description: income transaction created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                amount:
+                  type: number
+                due_date:
+                  type: string
+                payment_method_id:
+                  type: string
+              required:
+              - description
+              - amount
+              - due_date
+              - payment_method_id
 servers:
 - url: https://{defaultHost}
   variables:

@@ -11,5 +11,30 @@ RSpec.describe 'Transactions API V1', type: :request do
         run_test!
       end
     end
+
+    post 'Create Income Transaction' do
+      tags 'Income Transactions'
+      consumes 'application/json'
+      parameter name: 'income_transaction', in: :body, schema: {
+        type: :object,
+        properties: {
+          description: { type: :string },
+          amount: { type: :number },
+          due_date: { type: :string },
+          payment_method_id: { type: :string }
+        },
+        required: [ 'description', 'amount', 'due_date', 'payment_method_id' ]
+      }
+
+      response '201', 'income transaction created' do
+        let(:income_transaction) do
+          {
+            income_transaction: attributes_for(:income)
+          }
+        end
+
+        run_test!
+      end
+    end
   end
 end
