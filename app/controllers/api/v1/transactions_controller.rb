@@ -16,7 +16,7 @@ class Api::V1::TransactionsController < ApplicationController
 
     return create_expense if params[:expense_transaction].present?
 
-    raise 'Invalid transaction type'
+    raise "Invalid transaction type"
   end
 
   def create_income
