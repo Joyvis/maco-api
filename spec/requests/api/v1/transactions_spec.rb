@@ -36,5 +36,35 @@ RSpec.describe 'Transactions API V1', type: :request do
         run_test!
       end
     end
+
+    post 'Create Expense Transaction' do
+      tags 'Expense Transactions'
+      consumes 'application/json'
+      parameter name: 'expense_transaction', in: :body, schema: {
+        type: :object,
+        properties: {
+          description: { type: :string },
+          amount: { type: :number },
+          due_date: { type: :string },
+          payment_method_id: { type: :string },
+          category_id: { type: :string },
+          paid_at: { type: :string }
+        },
+        required: [
+          'description', 'amount', 'due_date', 'payment_method_id',
+          'category_id'
+        ]
+      }
+
+      response '201', 'expense transaction created' do
+        let(:expense_transaction) do
+          {
+            expense_transaction: attributes_for(:expense)
+          }
+        end
+
+        run_test!
+      end
+    end
   end
 end
