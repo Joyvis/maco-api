@@ -75,6 +75,16 @@ RSpec.describe 'Transactions API V1', type: :request do
 
         run_test!
       end
+
+      response '422', 'expense transaction not created' do
+        let(:expense_transaction) do
+          {
+            expense_transaction: attributes_for(:expense, amount: nil)
+          }
+        end
+
+        run_test!
+      end
     end
   end
 end
