@@ -5,6 +5,8 @@ class Transaction < ApplicationRecord
   scope :paid, -> { where.not(paid_at: nil) }
   scope :not_paid, -> { where(paid_at: nil) }
 
+  validates :description, :amount, :due_date, presence: true
+
   private
 
   def update_payment_method_balance

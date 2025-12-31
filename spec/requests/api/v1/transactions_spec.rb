@@ -35,6 +35,16 @@ RSpec.describe 'Transactions API V1', type: :request do
 
         run_test!
       end
+
+      response '422', 'income transaction not created' do
+        let(:income_transaction) do
+          {
+            income_transaction: attributes_for(:income, amount: nil)
+          }
+        end
+
+        run_test!
+      end
     end
 
     post 'Create Expense Transaction' do
