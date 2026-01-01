@@ -37,7 +37,7 @@ class Api::V0::PaymentMethodsController < ApplicationController
   def payment_method_klass
     methods = {
       "DebitAccount" => DebitAccount,
-      "CreditAccount" => CreditAccount,
+      "CreditAccount" => CreditAccount
     }
     methods.fetch(params[:payment_method][:type])
   end
