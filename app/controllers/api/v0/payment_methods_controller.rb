@@ -35,7 +35,11 @@ class Api::V0::PaymentMethodsController < ApplicationController
   private
 
   def payment_method_klass
-    params[:payment_method][:type].constantize
+    methods = {
+      "DebitAccount" => DebitAccount,
+      "CreditAccount" => CreditAccount,
+    }
+    methods.fetch(params[:payment_method][:type])
   end
 
   def payment_method_params
