@@ -1,13 +1,13 @@
 class Api::V0::PaymentMethodsController < ApplicationController
   def index
-    render json: DebitAccount.all
+    render json: PaymentMethod.all
   end
 
   def create
     # persist payment method
     attributes = payment_method_params
     attributes[:balance] = params[:payment_method][:initial_balance]
-    payment_method = DebitAccount.create!(attributes)
+    payment_method = payment_method_klass.create!(attributes)
 
     # create initial balance transaction
     Income.create!(
@@ -33,6 +33,10 @@ class Api::V0::PaymentMethodsController < ApplicationController
   end
 
   private
+
+  def payment_method_klass
+    params[:payment_method][:type].constantize
+  end
 
   def payment_method_params
     params.require(:payment_method).permit(:name)
