@@ -9,7 +9,7 @@ module Api::V0
     def create
       transaction = klass_model.new(transaction_params)
 
-      if transaction.payment_method.type == 'CreditAccount'
+      if transaction.payment_method.type == "CreditAccount"
         transaction.invoice_id = setup_invoice(transaction).id
       end
 
