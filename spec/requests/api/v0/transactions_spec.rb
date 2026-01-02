@@ -262,8 +262,6 @@ RSpec.describe "Transactions", type: :request do
       end
 
       context 'when filtering data' do
-        let(:query_params) { "?month=#{Date.today.month}" }
-
         let(:transactions) do
           create_list(:income, 3, amount: 1, due_date: Date.today-1.month)
           create_list(:expense, 3, :paid, amount: 1, due_date: Date.today-1.month)
@@ -271,11 +269,46 @@ RSpec.describe "Transactions", type: :request do
           create_list(:expense, 3, :paid, amount: 1)
         end
 
-        include_examples "monthly_summary_response"
+        context 'when filtering by due date' do
+          let(:query_params) do
+            filters = "?q[due_date_month_eq]=#{Date.today.month}"
+            filters += "&q[due_date_year_eq]=#{Date.today.year}"
+            filters
+          end
 
-        it 'returns filtered data' do
-          expect(parsed_response[:total].to_f).to eq(0.0)
-          expect(parsed_response[:transactions].count).to eq(6)
+
+          include_examples "monthly_summary_response"
+
+          it 'returns filtered data' do
+            expect(parsed_response[:total].to_f).to eq(0.0)
+            expect(parsed_response[:transactions].count).to eq(6)
+          end
+        end
+
+        context 'when filtering by payment method' do
+          let(:query_params) do
+            "?q[payment_method_id_eq]=#{Transaction.last.payment_method_id}"
+          end
+
+          include_examples "monthly_summary_response"
+
+          it 'returns filtered data' do
+            expect(parsed_response[:total].to_f).to eq(0.0)
+            expect(parsed_response[:transactions].count).to eq(1)
+          end
+        end
+
+        context 'when filtering by category' do
+          let(:query_params) do
+            "?q[category_id_eq]=#{Expense.last.category_id}"
+          end
+
+          include_examples "monthly_summary_response"
+
+          it 'returns filtered data' do
+            expect(parsed_response[:total].to_f).to eq(0.0)
+            expect(parsed_response[:transactions].count).to eq(1)
+          end
         end
       end
     end

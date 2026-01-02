@@ -36,6 +36,7 @@ gem "thruster", require: false
 # gem "rack-cors"
 gem "active_model_serializers"
 gem "rswag-api"
+gem "ransack"
 
 group :development do
   gem "annotate"
