@@ -1,4 +1,5 @@
 class CreditAccount < PaymentMethod
+  validates :due_day, presence: true
 end
 
 # == Schema Information
