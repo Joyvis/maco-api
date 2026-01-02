@@ -49,14 +49,21 @@ module Api::V0
     private
 
     def setup_invoice(transaction)
-      # TODO: think how to properly setup the invoice due date
       Invoice.find_or_create_by(
         amount: transaction.amount,
         description: transaction.payment_method.name + " Invoice",
-        due_date: transaction.due_date,
+        due_date: calculate_next_due_date(transaction.payment_method),
         payment_method_id: transaction.payment_method_id,
         paid_at: nil
       )
+    end
+
+    def calculate_next_due_date(payment_method)
+      next_month = Date.today
+      next_month = next_month.next_month if next_month.day > payment_method.due_day
+
+      next_month = next_month.beginning_of_month
+      next_month + (payment_method.due_day - 1).days
     end
 
     def serialized_resources(resources)

@@ -43,6 +43,6 @@ class Api::V0::PaymentMethodsController < ApplicationController
   end
 
   def payment_method_params
-    params.require(:payment_method).permit(:name)
+    params.require(:payment_method).permit(:name, :due_day)
   end
 end

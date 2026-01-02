@@ -16,6 +16,7 @@ FactoryBot.define do
     name { "#{Faker::Lorem.word} Credit" }
     type { 'CreditAccount' }
     balance { 100 }
+    due_day { 20 }
     trait :with_expenses do
       after(:create) do |payment_method|
         create_list(:expense, 2, payment_method_id: payment_method.id)
