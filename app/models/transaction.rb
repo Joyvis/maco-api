@@ -2,10 +2,29 @@ class Transaction < ApplicationRecord
   belongs_to :payment_method
   after_create :update_payment_method_balance
 
+  scope :not_invoices, -> { where(invoice_id: nil) }
   scope :paid, -> { where.not(paid_at: nil) }
   scope :not_paid, -> { where(paid_at: nil) }
 
   validates :description, :amount, :due_date, presence: true
+
+  ransacker :due_date_month do
+    Arel.sql("EXTRACT(MONTH FROM due_date)")
+  end
+
+  ransacker :due_date_year do
+    Arel.sql("EXTRACT(YEAR FROM due_date)")
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "amount",
+      "payment_method_id",
+      "category_id",
+      "due_date_year",
+     "due_date_month"
+    ]
+  end
 
   private
 

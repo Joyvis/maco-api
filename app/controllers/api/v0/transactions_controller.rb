@@ -33,16 +33,13 @@ module Api::V0
 
     # TODO: rename to summary
     def monthly_summary
-      transactions = Transaction.where(invoice_id: nil)
-
-      if params[:month]
-        transactions = transactions.where("extract(month from due_date) = ?", params[:month])
-      end
+      transactions = Transaction.not_invoices
+      transactions = transactions.ransack(params[:q])
 
       render json: {
         total: calculate_total,
         pending: calculate_pending,
-        transactions: serialized_resources(transactions)
+        transactions: serialized_resources(transactions.result)
       }, status: :ok
     end
 
