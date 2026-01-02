@@ -12,4 +12,5 @@ end
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  balance    :float            not null
+#  due_day    :integer
 #
