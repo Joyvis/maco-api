@@ -100,14 +100,14 @@ RSpec.describe "Transactions", type: :request do
           end
 
           context 'when there is open invoice' do
-            let(:payment_method) { create(payment_method_type, balance: 0) }
+            let(:payment_method) { create(payment_method_type, balance: 0, due_day: Date.today.day) }
             let(:expense) { Expense.find(parsed_response[:id]) }
             let(:invoice) do
               create(
                 :invoice,
                 payment_method_id: payment_method.id,
                 description: payment_method.name + ' Invoice',
-                due_date: params[:due_date],
+                due_date: Date.today,
                 amount: params[:amount]
               )
             end
