@@ -34,10 +34,12 @@ FactoryBot.define do
     trait :paid do
       paid_at { Date.today }
     end
-
+    transient do
+      invoice_items_count { 2 }
+    end
     trait :invoice_items do
-      after(:create) do |invoice|
-        create_list(:expense, 2, invoice_id: invoice.id)
+      after(:create) do |invoice, evaluator|
+        create_list(:expense, evaluator.invoice_items_count, invoice_id: invoice.id)
       end
     end
   end
