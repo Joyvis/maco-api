@@ -321,4 +321,3 @@ RSpec.describe "Transactions", type: :request do
     end
   end
 end
-
