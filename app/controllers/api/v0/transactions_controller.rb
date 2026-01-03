@@ -37,9 +37,10 @@ module Api::V0
       transactions = transactions.ransack(params[:q])
 
       render json: {
-        total: calculate_total,
-        pending: calculate_pending,
-        transactions: serialized_resources(transactions.result)
+        paid_total: calculate_total,
+        paid_transactions: serialized_resources(transactions.result),
+        not_paid_total: calculate_pending,
+        not_paid_transactions: serialized_resources(Expense.not_paid.where(invoice_id: nil))
       }, status: :ok
     end
 
