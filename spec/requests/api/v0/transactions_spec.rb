@@ -248,9 +248,10 @@ RSpec.describe "Transactions", type: :request do
 
       context 'with all kind of transactions' do
         let(:transactions) do
+          # TODO: there is a ticket that solve invoice balance calculation
           create_list(:expense, 3, :paid, amount: 1) +
             create_list(:income, 7, amount: 1) +
-            create_list(:invoice, 3, :paid, :invoice_items, amount: 1) +
+            create_list(:invoice, 3, :paid, :invoice_items, invoice_items_count: 1, amount: 1) +
             create_list(:expense, 3, amount: 1)
         end
 
@@ -258,11 +259,12 @@ RSpec.describe "Transactions", type: :request do
 
         it 'returns http success' do
           expect(parsed_response[:paid_total].to_f).to eq(1.0)
-          expect(parsed_response[:paid_transactions].count).to eq(16)
+          expect(parsed_response[:paid_transactions].count).to eq(13)
         end
 
-        it 'validates pending transactions' do
-          expect(parsed_response[:not_paid_total].to_f).to eq(3.0)
+        it 'validates not_paid transactions' do
+          expect(parsed_response[:not_paid_transactions].count).to eq(3)
+          expect(parsed_response[:not_paid_total].to_f).to eq(-3.0)
         end
       end
 
@@ -292,13 +294,13 @@ RSpec.describe "Transactions", type: :request do
 
         context 'when filtering by payment method' do
           let(:query_params) do
-            "?q[payment_method_id_eq]=#{Transaction.last.payment_method_id}"
+            "?q[payment_method_id_eq]=#{Expense.last.payment_method_id}"
           end
 
           include_examples "monthly_summary_response"
 
           it 'returns filtered data' do
-            expect(parsed_response[:paid_total].to_f).to eq(0.0)
+            expect(parsed_response[:paid_total].to_f).to eq(-1.0)
             expect(parsed_response[:paid_transactions].count).to eq(1)
           end
         end
@@ -311,7 +313,7 @@ RSpec.describe "Transactions", type: :request do
           include_examples "monthly_summary_response"
 
           it 'returns filtered data' do
-            expect(parsed_response[:paid_total].to_f).to eq(0.0)
+            expect(parsed_response[:paid_total].to_f).to eq(-1.0)
             expect(parsed_response[:paid_transactions].count).to eq(1)
           end
         end

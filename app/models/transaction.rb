@@ -2,9 +2,12 @@ class Transaction < ApplicationRecord
   belongs_to :payment_method
   after_create :update_payment_method_balance
 
-  scope :not_invoices, -> { where(invoice_id: nil) }
+  scope :not_invoice_item, -> { where(invoice_id: nil) }
   scope :paid, -> { where.not(paid_at: nil) }
   scope :not_paid, -> { where(paid_at: nil) }
+
+  scope :income, -> { where(type: "Income") }
+  scope :not_income, -> { where(type: "Expense").or(where(type: "Invoice")) }
 
   validates :description, :amount, :due_date, presence: true
 
@@ -24,6 +27,14 @@ class Transaction < ApplicationRecord
       "due_date_year",
      "due_date_month"
     ]
+  end
+
+  def status
+    return :paid if paid_at.present?
+
+    return :overdue if due_date < Date.today
+
+    :pending
   end
 
   private

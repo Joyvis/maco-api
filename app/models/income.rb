@@ -1,4 +1,5 @@
 class Income < Transaction
+  before_create -> { self.paid_at = Time.now }
 end
 
 # == Schema Information

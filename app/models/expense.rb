@@ -1,6 +1,4 @@
 class Expense < Transaction
-  include HasStatus
-
   belongs_to :category
 
   belongs_to :invoice, foreign_key: :invoice_id, optional: true

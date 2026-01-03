@@ -33,14 +33,17 @@ module Api::V0
 
     # TODO: rename to summary
     def monthly_summary
-      transactions = Transaction.not_invoices
-      transactions = transactions.ransack(params[:q])
+      transactions = Transaction.not_invoice_item
+      paid_incomes = transactions.income.paid.ransack(params[:q]).result
+      paid_expenses = transactions.not_income.paid.ransack(params[:q]).result
+      not_paid_incomes = transactions.income.not_paid
+      not_paid_expenses = transactions.not_income.not_paid
 
       render json: {
-        paid_total: calculate_total,
-        paid_transactions: serialized_resources(transactions.result),
-        not_paid_total: calculate_pending,
-        not_paid_transactions: serialized_resources(Expense.not_paid.where(invoice_id: nil))
+        paid_total: paid_incomes.sum(:amount) - paid_expenses.sum(:amount),
+        paid_transactions: serialized_resources(paid_incomes + paid_expenses),
+        not_paid_total: not_paid_incomes.sum(:amount) - not_paid_expenses.sum(:amount),
+        not_paid_transactions: serialized_resources(not_paid_incomes + not_paid_expenses)
       }, status: :ok
     end
 
@@ -74,17 +77,6 @@ module Api::V0
 
     def serialized_resources(resources)
       ActiveModelSerializers::SerializableResource.new(resources)
-    end
-
-    def calculate_total
-      @calculate_total = Income.sum(:amount)
-      @calculate_total -= Expense.paid.where(invoice_id: nil).sum(:amount)
-      @calculate_total -= Invoice.paid.sum(:amount)
-    end
-
-    def calculate_pending
-      @calculate_pending = Expense.not_paid.where(invoice_id: nil).sum(:amount)
-      @calculate_pending += Invoice.not_paid.sum(:amount)
     end
 
     def klass_model
