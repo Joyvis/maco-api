@@ -46,12 +46,20 @@ module Api::V0
     private
 
     def setup_invoice(transaction)
-      Invoice.find_or_create_by(
-        amount: transaction.amount,
+      invoice = Invoice.find_by(
         description: transaction.payment_method.name + " Invoice",
         due_date: calculate_next_due_date(transaction.payment_method),
         payment_method_id: transaction.payment_method_id,
         paid_at: nil
+      )
+
+      return invoice if invoice
+
+      Invoice.create(
+        description: transaction.payment_method.name + " Invoice",
+        due_date: calculate_next_due_date(transaction.payment_method),
+        payment_method_id: transaction.payment_method_id,
+        amount: transaction.amount
       )
     end
 
