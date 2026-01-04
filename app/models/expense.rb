@@ -14,13 +14,11 @@ class Expense < Transaction
     transaction = new(transaction_params)
 
     if transaction&.payment_method&.type == "CreditAccount"
-      transaction.invoice_id = setup_invoice(transaction).id
+      transaction.invoice_id = transaction.setup_invoice(transaction).id
     end
     transaction.save!
     transaction
   end
-
-  private
 
   def setup_invoice(transaction)
     invoice = Invoice.find_by(
@@ -39,6 +37,16 @@ class Expense < Transaction
       amount: transaction.amount
     )
   end
+
+  def calculate_next_due_date(payment_method)
+    next_month = Date.today
+    next_month = next_month.next_month if next_month.day > payment_method.due_day
+
+    next_month = next_month.beginning_of_month
+    next_month + (payment_method.due_day - 1).days
+  end
+
+  private
 
   def validate_category_percent
     total = Category.where.not(percent: nil).sum(:percent)
