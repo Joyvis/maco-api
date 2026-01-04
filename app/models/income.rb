@@ -1,5 +1,11 @@
 class Income < Transaction
   before_create -> { self.paid_at = Time.now }
+
+  def self.create_transaction!(transaction_params)
+    transaction = new(transaction_params)
+    transaction.save!
+    transaction
+  end
 end
 
 # == Schema Information

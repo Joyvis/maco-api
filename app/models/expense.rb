@@ -10,7 +10,35 @@ class Expense < Transaction
     if: -> { category && category.percent.present? }
   validates :category, presence: true
 
+  def self.create_transaction!(transaction_params)
+    transaction = new(transaction_params)
+
+    if transaction&.payment_method&.type == "CreditAccount"
+      transaction.invoice_id = setup_invoice(transaction).id
+    end
+    transaction.save!
+    transaction
+  end
+
   private
+
+  def setup_invoice(transaction)
+    invoice = Invoice.find_by(
+      description: transaction.payment_method.name + " Invoice",
+      due_date: calculate_next_due_date(transaction.payment_method),
+      payment_method_id: transaction.payment_method_id,
+      paid_at: nil
+    )
+
+    return invoice if invoice
+
+    Invoice.create(
+      description: transaction.payment_method.name + " Invoice",
+      due_date: calculate_next_due_date(transaction.payment_method),
+      payment_method_id: transaction.payment_method_id,
+      amount: transaction.amount
+    )
+  end
 
   def validate_category_percent
     total = Category.where.not(percent: nil).sum(:percent)
