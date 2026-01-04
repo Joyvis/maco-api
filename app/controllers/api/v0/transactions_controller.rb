@@ -34,8 +34,11 @@ module Api::V0
     # TODO: rename to summary
     def monthly_summary
       transactions = Transaction.not_invoice_item
+      # filter by paid_at
       paid_incomes = transactions.income.paid.ransack(params[:q]).result
       paid_expenses = transactions.not_income.paid.ransack(params[:q]).result
+
+      # filter by due_date
       not_paid_incomes = transactions.income.not_paid
       not_paid_expenses = transactions.not_income.not_paid
 

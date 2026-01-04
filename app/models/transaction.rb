@@ -19,13 +19,23 @@ class Transaction < ApplicationRecord
     Arel.sql("EXTRACT(YEAR FROM due_date)")
   end
 
+  ransacker :paid_at_month do
+    Arel.sql("EXTRACT(MONTH FROM paid_at)")
+  end
+
+  ransacker :paid_at_year do
+    Arel.sql("EXTRACT(YEAR FROM paid_at)")
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     [
       "amount",
       "payment_method_id",
       "category_id",
       "due_date_year",
-     "due_date_month"
+      "due_date_month",
+      "paid_at_year",
+      "paid_at_month"
     ]
   end
 
