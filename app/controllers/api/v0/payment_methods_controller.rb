@@ -41,11 +41,11 @@ class Api::V0::PaymentMethodsController < ApplicationController
 
     return Income if params[:payment_method][:initial_balance].to_f.positive?
 
-    return Expense
+    Expense
   end
 
   def build_transaction
-    return Expense if params[:payment_method][:type] == "CreditAccount"
+    Expense if params[:payment_method][:type] == "CreditAccount"
   end
 
   def update
