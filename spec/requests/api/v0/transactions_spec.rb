@@ -271,7 +271,7 @@ RSpec.describe "Transactions", type: :request do
       context 'when filtering data' do
         let(:transactions) do
           create_list(:income, 3, amount: 1, due_date: Date.today-1.month)
-          create_list(:expense, 3, :paid, amount: 1, due_date: Date.today-1.month)
+          create_list(:expense, 3, amount: 1, paid_at: Date.today-1.month, due_date: Date.today-1.month)
           create_list(:income, 3, amount: 1)
           create_list(:expense, 3, :paid, amount: 1)
         end
@@ -289,6 +289,23 @@ RSpec.describe "Transactions", type: :request do
           it 'returns filtered data' do
             expect(parsed_response[:paid_total].to_f).to eq(0.0)
             expect(parsed_response[:paid_transactions].count).to eq(6)
+          end
+        end
+
+        context 'when filtering by paid at' do
+          let(:past_date) { Date.today-1.month }
+          let(:query_params) do
+            filters = "?q[paid_at_month_eq]=#{past_date.month}"
+            filters += "&q[paid_at_year_eq]=#{past_date.year}"
+            filters
+          end
+
+
+          include_examples "monthly_summary_response"
+
+          it 'returns filtered data' do
+            expect(parsed_response[:paid_total].to_f).to eq(-3)
+            expect(parsed_response[:paid_transactions].count).to eq(3)
           end
         end
 
