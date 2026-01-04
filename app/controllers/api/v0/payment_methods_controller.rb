@@ -9,15 +9,43 @@ class Api::V0::PaymentMethodsController < ApplicationController
     attributes[:balance] = params[:payment_method][:initial_balance]
     payment_method = payment_method_klass.create!(attributes)
 
-    # create initial balance transaction
-    Income.create!(
+    if params[:payment_method][:initial_balance] &&
+        !params[:payment_method][:initial_balance].to_f.zero?
+
+      repo = TransactionsRepository.new(type: transaction_type)
+      transaction_params = transaction_params(payment_method)
+      transaction_params[:category_id] = create_category if transaction_type == Expense
+      TransactionCreator.
+        new(repo: repo).
+        call(params: transaction_params)
+    end
+
+    render json: payment_method, status: :created
+  end
+
+  def create_category
+    Category.create!(name: "Unexpected Expenses").id
+  end
+
+  def transaction_params(payment_method)
+    {
       amount: params[:payment_method][:initial_balance],
       due_date: Date.current,
       description: "Initial balance",
       payment_method_id: payment_method.id
-    )
+    }
+  end
 
-    render json: payment_method, status: :created
+  def transaction_type
+    return Expense if payment_method_klass == CreditAccount
+
+    return Income if params[:payment_method][:initial_balance].to_f.positive?
+
+    Expense
+  end
+
+  def build_transaction
+    Expense if params[:payment_method][:type] == "CreditAccount"
   end
 
   def update

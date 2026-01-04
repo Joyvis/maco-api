@@ -7,13 +7,8 @@ module Api::V0
     end
 
     def create
-      transaction = klass_model.new(transaction_params)
-
-      if transaction.payment_method.type == "CreditAccount"
-        transaction.invoice_id = setup_invoice(transaction).id
-      end
-
-      transaction.save!
+      repo = TransactionsRepository.new(type: klass_model)
+      transaction = TransactionCreator.new(repo: repo).call(params: transaction_params)
 
       render json: transaction, status: :created
     end
@@ -51,32 +46,6 @@ module Api::V0
     end
 
     private
-
-    def setup_invoice(transaction)
-      invoice = Invoice.find_by(
-        description: transaction.payment_method.name + " Invoice",
-        due_date: calculate_next_due_date(transaction.payment_method),
-        payment_method_id: transaction.payment_method_id,
-        paid_at: nil
-      )
-
-      return invoice if invoice
-
-      Invoice.create(
-        description: transaction.payment_method.name + " Invoice",
-        due_date: calculate_next_due_date(transaction.payment_method),
-        payment_method_id: transaction.payment_method_id,
-        amount: transaction.amount
-      )
-    end
-
-    def calculate_next_due_date(payment_method)
-      next_month = Date.today
-      next_month = next_month.next_month if next_month.day > payment_method.due_day
-
-      next_month = next_month.beginning_of_month
-      next_month + (payment_method.due_day - 1).days
-    end
 
     def serialized_resources(resources)
       ActiveModelSerializers::SerializableResource.new(resources)
