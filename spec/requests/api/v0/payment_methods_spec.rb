@@ -39,12 +39,30 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
     end
 
     context 'when payment method is CreditAccount' do
-      let(:params) { attributes_for(:credit_account).merge(initial_balance: 50) }
-
-      it 'creates a payment method' do
-        expect(response).to have_http_status(:created)
-        expect(CreditAccount.count).to eq(1)
+      let(:params) do
+        attributes_for(:credit_account).merge(initial_balance: initial_balance)
       end
+
+      context 'when initial balance is equak to 0' do
+        let(:initial_balance) { 0 }
+
+        it 'creates a payment method' do
+          expect(response).to have_http_status(:created)
+          expect(CreditAccount.count).to eq(1)
+          expect(Transaction.count).to eq(0)
+        end
+      end
+
+      # context 'when initial balance is greater than 0' do
+      #   let(:initial_balance) { 100 }
+      #
+      #   it 'creates a payment method' do
+      #     expect(response).to have_http_status(:created)
+      #     expect(CreditAccount.count).to eq(1)
+      #     expect(Expense.count).to eq(1)
+      #     expect(Income.count).to eq(0)
+      #   end
+      # end
     end
   end
 

@@ -9,15 +9,21 @@ class Api::V0::PaymentMethodsController < ApplicationController
     attributes[:balance] = params[:payment_method][:initial_balance]
     payment_method = payment_method_klass.create!(attributes)
 
-    # create initial balance transaction
-    Income.create!(
-      amount: params[:payment_method][:initial_balance],
-      due_date: Date.current,
-      description: "Initial balance",
-      payment_method_id: payment_method.id
-    )
+    if params[:payment_method][:initial_balance] &&
+        !params[:payment_method][:initial_balance].to_f.zero?
+      Income.create!(
+        amount: params[:payment_method][:initial_balance],
+        due_date: Date.current,
+        description: "Initial balance",
+        payment_method_id: payment_method.id
+      )
+    end
 
     render json: payment_method, status: :created
+  end
+
+  def build_transaction
+    return Expense if params[:payment_method][:type] == "CreditAccount"
   end
 
   def update
