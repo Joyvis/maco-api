@@ -1,15 +1,31 @@
 class Api::V1::TransactionsController < ApplicationController
+  class InvalidTrasactionType < StandardError; end
+
+  rescue_from InvalidTrasactionType, with: :bad_request
+
+  TYPE_MAP = {
+    income_transaction: Income,
+    expense_transaction: Expense
+  }.freeze
+
   def index
     @transactions = Transaction.all
     render json: @transactions
   end
 
   def create
+    transaction_type = TYPE_MAP[params.keys.first.to_sym]
+    raise InvalidTrasactionType, "Invalid transaction type" if transaction_type.nil?
+
     transaction = create_transaction
     render json: transaction, status: :created
   end
 
   private
+
+  def bad_request(exception)
+    render json: { error: exception.message }, status: :bad_request
+  end
 
   def create_transaction
     return create_income if params[:income_transaction].present?

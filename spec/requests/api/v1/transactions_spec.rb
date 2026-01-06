@@ -86,5 +86,23 @@ RSpec.describe 'Transactions API V1', type: :request do
         run_test!
       end
     end
+
+    post 'Create Unexpected Type Transaction' do
+      tags 'Invalid Transaction Type'
+      consumes 'application/json'
+      parameter name: 'foo_transaction', in: :body, schema: {
+        type: :object
+      }
+      response '400', 'invalid transaction error' do
+        let(:foo_transaction) do
+          {
+            foo_transaction: nil
+          }
+        end
+
+        run_test!
+      end
+    end
+
   end
 end
