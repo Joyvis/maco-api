@@ -3,9 +3,23 @@ class Api::V1::TransactionsController < ApplicationController
 
   rescue_from InvalidTrasactionType, with: :bad_request
 
+  INCOME_PARAMS = [
+    :description, :amount, :due_date, :payment_method_id
+  ].freeze
+
+  EXPENSE_PARAMS = INCOME_PARAMS + [
+    :category_id, :paid_at
+  ].freeze
+
   TYPE_MAP = {
-    income_transaction: Income,
-    expense_transaction: Expense
+    income_transaction: {
+      type: Income,
+      params: INCOME_PARAMS
+    },
+    expense_transaction: {
+      type: Expense,
+      params: EXPENSE_PARAMS
+    }
   }.freeze
 
   def index
@@ -14,10 +28,20 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create
-    transaction_type = TYPE_MAP[params.keys.first.to_sym]
+    transaction_type_key = params.keys.first.to_sym
+    transaction_type = TYPE_MAP[transaction_type_key]&.fetch(:type, nil)
     raise InvalidTrasactionType, "Invalid transaction type" if transaction_type.nil?
 
-    transaction = create_transaction
+    repo = TransactionsRepository.new(type: transaction_type)
+    transaction_params = transaction_params(
+      type: transaction_type_key,
+      type_params: TYPE_MAP[transaction_type_key][:params]
+    )
+
+    transaction = TransactionCreator.
+      new(repo: repo).
+      call(params: transaction_params)
+
     render json: transaction, status: :created
   end
 
@@ -27,34 +51,7 @@ class Api::V1::TransactionsController < ApplicationController
     render json: { error: exception.message }, status: :bad_request
   end
 
-  def create_transaction
-    return create_income if params[:income_transaction].present?
-
-    return create_expense if params[:expense_transaction].present?
-
-    raise "Invalid transaction type"
-  end
-
-  def create_income
-    Income.create!(income_transaction_params)
-  end
-
-  def create_expense
-    Expense.create!(expense_transaction_params)
-  end
-
-  def income_transaction_params
-    params.
-      require(:income_transaction).
-      permit(:description, :amount, :due_date, :payment_method_id)
-  end
-
-  def expense_transaction_params
-    params.
-      require(:expense_transaction).
-      permit(
-        :description, :amount, :due_date, :payment_method_id, :category_id,
-        :paid_at
-      )
+  def transaction_params(type:, type_params:)
+    params.require(type).permit(type_params)
   end
 end

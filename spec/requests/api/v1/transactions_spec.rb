@@ -103,6 +103,5 @@ RSpec.describe 'Transactions API V1', type: :request do
         run_test!
       end
     end
-
   end
 end
