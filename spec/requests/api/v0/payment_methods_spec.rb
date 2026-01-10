@@ -32,7 +32,7 @@ RSpec.describe "Api::V0::PaymentMethods", type: :request do
         let(:params) { { type: 'DebitAccount' } }
 
         it 'returns a unprocessable entity response' do
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(parsed_response[:errors]).to be_present
           expect(DebitAccount.count).to eq(0)
         end

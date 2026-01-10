@@ -38,7 +38,7 @@ RSpec.describe "Api::V0::PaymentMethods::Invoices", type: :request do
         let(:params) { { due_date: Date.today, amount: 3 } }
 
         it 'returns an error response' do
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end

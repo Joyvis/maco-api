@@ -5,7 +5,7 @@ module Transactions
     def create(income_params)
       income = Income.create_transaction!(income_params)
 
-      entity.new(income.attributes)
+      ENTITY.new(income.attributes)
     rescue ActiveRecord::RecordInvalid => e
       raise InvalidIncomeError, e.full_message
     end
