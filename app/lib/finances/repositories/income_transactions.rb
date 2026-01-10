@@ -6,8 +6,12 @@ module Finances
 
       ENTITY = Entities::IncomeTransaction
 
-      def create(params)
+      def create
         raise NotImplementedError, 'create method must be implement'
+      end
+
+      def find_all
+        raise NotImplementedError, 'find_all method must be implement'
       end
     end
   end

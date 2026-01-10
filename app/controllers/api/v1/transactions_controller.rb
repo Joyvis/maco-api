@@ -23,7 +23,8 @@ class Api::V1::TransactionsController < ApplicationController
   }.freeze
 
   def index
-    @transactions = Transaction.all
+    @transactions = Transactions::IncomesRepository.new.find_all
+    @transactions += Transaction.where.not(type: "Income")
     render json: @transactions
   end
 

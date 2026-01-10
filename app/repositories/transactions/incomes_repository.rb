@@ -9,5 +9,9 @@ module Transactions
     rescue ActiveRecord::RecordInvalid => e
       raise InvalidIncomeError, e.full_message
     end
+
+    def find_all
+      Income.all.map { |income| ENTITY.new(income.attributes) }
+    end
   end
 end
