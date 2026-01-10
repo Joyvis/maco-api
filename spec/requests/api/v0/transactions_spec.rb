@@ -31,7 +31,7 @@ RSpec.describe "Transactions", type: :request do
             let(:payment_method) { create(payment_method_type, balance: 0) }
 
             it 'returns a unprocessable entity response' do
-              expect(response).to have_http_status(:unprocessable_entity)
+              expect(response).to have_http_status(:unprocessable_content)
               expect(parsed_response[:errors]).to be_present
               expect(Transaction.count).to eq(0)
             end
