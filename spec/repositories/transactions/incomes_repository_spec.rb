@@ -8,7 +8,7 @@ RSpec.describe Transactions::IncomesRepository do
       let(:income_params) { attributes_for(:income) }
 
       it 'creates a new income' do
-        expect(income_transaction).to be_a(Transactions::IncomeTransactionEntity)
+        expect(income_transaction).to be_a(Finances::Entities::IncomeTransaction)
       end
     end
 
