@@ -50,7 +50,7 @@ class Api::V1::TransactionsController < ApplicationController
       type_params: TYPE_MAP[transaction_type_key][:params]
     )
 
-    Transactions::IncomeCreator.
+    Finances::UseCases::CreateIncomeTransaction.
       new(repository: repo).
       call(params: transaction_params)
   end
