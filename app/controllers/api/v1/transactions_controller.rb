@@ -57,14 +57,14 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def create_transactions(transaction_type_key, transaction_type)
-    repo = TransactionsRepository.new(type: transaction_type)
+    repo = Transactions::ExpensesRepository.new
     transaction_params = transaction_params(
       type: transaction_type_key,
       type_params: TYPE_MAP[transaction_type_key][:params]
     )
 
-    TransactionCreator.
-      new(repo: repo).
+    Finances::UseCases::CreateExpenseTransaction.
+      new(repository: repo).
       call(params: transaction_params)
   end
 
