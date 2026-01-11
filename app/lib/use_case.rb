@@ -10,6 +10,8 @@ class UseCase
       unless klass.is_a?(repository[:interface])
         raise RepositoryNotImplementedError, repository[:message]
       end
+
+      instance_variable_set("@#{key}", klass)
     end
   end
 end
