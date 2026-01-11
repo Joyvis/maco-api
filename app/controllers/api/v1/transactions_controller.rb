@@ -13,8 +13,8 @@ class Api::V1::TransactionsController < ApplicationController
 
   TYPE_MAP = {
     income_transaction: {
-      repositories:{
-        repository: Transactions::IncomesRepository,
+      repositories: {
+        repository: Transactions::IncomesRepository
       },
       use_case: Finances::UseCases::CreateIncomeTransaction,
       params: INCOME_PARAMS

@@ -4,15 +4,15 @@ module Finances
       REPOSITORIES = {
         expense_transaction_repository: {
           interface: Finances::Repositories::ExpenseTransactions,
-          message: 'Invalid Expense Repository'
+          message: "Invalid Expense Repository"
         },
         invoice_transaction_repository: {
           interface: Finances::Repositories::InvoiceTransactions,
-          message: 'Invalid Invoice Repository'
+          message: "Invalid Invoice Repository"
         },
         credit_account_payment_method_repository: {
           interface: Finances::Repositories::CreditAccountPaymentMethods,
-          message: 'Invalid Invoice Repositoryk'
+          message: "Invalid Invoice Repositoryk"
         }
       }.freeze
 
@@ -58,7 +58,7 @@ module Finances
           payment_method_id: payment_method.id,
           amount: params[:amount]
         )
-      # Rescue invalid params error defined in the repository interface
+        # Rescue invalid params error defined in the repository interface
       end
 
       def calculate_next_due_date(payment_method)
