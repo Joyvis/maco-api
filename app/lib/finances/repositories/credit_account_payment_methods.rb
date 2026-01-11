@@ -2,8 +2,9 @@ module Finances
   module Repositories
     class CreditAccountPaymentMethods
       # TODO: Move to a parent class
-      class InvalidExpenseError < StandardError; end
       class NotImplementedError < StandardError; end
+      class InvalidParamsError < StandardError; end
+      class NotFoundError < StandardError; end
 
       ENTITY = Entities::CreditAccountPaymentMethod
 

@@ -21,12 +21,7 @@ module Finances
         :credit_account_payment_method_repository
 
       def call(params:)
-        # TODO: inject payment method repo
-        # if the payment method type is equals to CreditAccount
-        # Then create an invoice.
-        payment_method = credit_account_payment_method_repository.
-          find_by_id(params[:payment_method_id])
-
+        payment_method = fetch_payment_method(params[:payment_method_id])
         if payment_method
           invoice = fetch_invoice(payment_method)
           invoice = create_invoice(payment_method, params) unless invoice
@@ -39,6 +34,12 @@ module Finances
 
       private
 
+      def fetch_payment_method(uuid)
+        credit_account_payment_method_repository.find_by_id(uuid)
+      rescue Repositories::CreditAccountPaymentMethods::NotFoundError
+        nil
+      end
+
       def fetch_invoice(payment_method)
         invoice_transaction_repository.find_by(
           description: payment_method.name + " Invoice",
@@ -46,6 +47,8 @@ module Finances
           payment_method_id: payment_method.id,
           paid_at: nil
         )
+      rescue Repositories::InvoiceTransactions::NotFoundError
+        nil
       end
 
       def create_invoice(payment_method, params)
@@ -55,6 +58,7 @@ module Finances
           payment_method_id: payment_method.id,
           amount: params[:amount]
         )
+      # Rescue invalid params error defined in the repository interface
       end
 
       def calculate_next_due_date(payment_method)
