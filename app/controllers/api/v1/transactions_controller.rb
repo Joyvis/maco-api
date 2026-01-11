@@ -13,14 +13,20 @@ class Api::V1::TransactionsController < ApplicationController
 
   TYPE_MAP = {
     income_transaction: {
-      repository: Transactions::IncomesRepository,
+      repositories: {
+        repository: Transactions::IncomesRepository
+      },
       use_case: Finances::UseCases::CreateIncomeTransaction,
       params: INCOME_PARAMS
 
     },
     expense_transaction: {
-      repository: Transactions::IncomesRepository,
-      use_case: Finances::UseCases::CreateIncomeTransaction,
+      repositories: {
+        expense_transaction_repository: Transactions::ExpensesRepository,
+        invoice_transaction_repository: Transactions::InvoicesRepository,
+        credit_account_payment_method_repository: PaymentMethods::CreditAccountsRepository
+      },
+      use_case: Finances::UseCases::CreateExpenseTransaction,
       params: EXPENSE_PARAMS
     }
   }.freeze
@@ -43,9 +49,10 @@ class Api::V1::TransactionsController < ApplicationController
   private
 
   def create_transactions(type, key)
-    repo = type[:repository].new
+    repos = type[:repositories]
+    repos = repos.each_with_object({}) { |(key, repo), hash| hash[key] = repo.new }
     transaction_params = transaction_params(key, type[:params])
-    type[:use_case].new(repository: repo).call(params: transaction_params)
+    type[:use_case].new(**repos).call(params: transaction_params)
   end
 
   def bad_request(exception)
