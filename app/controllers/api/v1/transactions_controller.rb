@@ -52,7 +52,7 @@ class Api::V1::TransactionsController < ApplicationController
     repos = type[:repositories]
     repos = repos.each_with_object({}) { |(key, repo), hash| hash[key] = repo.new }
     transaction_params = transaction_params(key, type[:params])
-    type[:use_case].new(**repos).call(params: transaction_params)
+    type[:use_case].new(repositories: repos).call(params: transaction_params)
   end
 
   def bad_request(exception)

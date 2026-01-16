@@ -7,7 +7,15 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       let(:repo) { IncomeRepo.new }
       let(:params) { { amount: 100 } }
-      subject { described_class.new(income_transaction_repository: repo).call(params: params) }
+      subject do
+        described_class.
+          new(
+            repositories: {
+              income_transaction_repository: repo
+            }
+          ).
+          call(params: params)
+      end
 
       context 'when params are valid' do
         before { allow(repo).to receive(:create).and_return(transaction) }
@@ -32,7 +40,15 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
     context 'when repo does not implement the correct interface' do
       class WrongIncomeRepo; end
       let(:repo) { WrongIncomeRepo.new }
-      subject { described_class.new(income_transactions_repository: repo).call(params: nil) }
+      subject do
+        described_class.
+          new(
+            repositories: {
+              income_transactions_repository: repo
+            }
+          ).
+          call(params: nil)
+      end
 
       it 'it raises an exception' do
         expect { subject }

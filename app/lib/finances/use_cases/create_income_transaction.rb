@@ -10,6 +10,10 @@ module Finances
         }
       }.freeze
 
+      # VALIDATOR = {
+      #   interface:
+      # }.freeze
+
       attr_accessor :income_transaction_repository
 
       def call(params:)

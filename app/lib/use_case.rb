@@ -2,7 +2,7 @@ class UseCase
   class RepositoryNotImplementedError < StandardError; end
   class NotDefinedInterface < StandardError; end
 
-  def initialize(repositories)
+  def initialize(repositories:, validator: nil)
     repositories.each do |key, klass|
       repository = self.class::REPOSITORIES[key]
       next if klass.nil?
