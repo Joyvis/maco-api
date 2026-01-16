@@ -2,6 +2,7 @@ class Api::V1::TransactionsController < ApplicationController
   class InvalidTrasactionType < StandardError; end
 
   rescue_from InvalidTrasactionType, with: :bad_request
+  rescue_from Finances::Validators::Base::ValidationError, with: :unprocessable_content
 
   INCOME_PARAMS = [
     :description, :amount, :due_date, :payment_method_id
@@ -14,7 +15,8 @@ class Api::V1::TransactionsController < ApplicationController
   TYPE_MAP = {
     income_transaction: {
       repositories: {
-        income_transaction_repository: Transactions::IncomesRepository
+        income_transaction_repository: Transactions::IncomesRepository,
+        payment_method_repository: PaymentMethodsRepository
       },
       use_case: Finances::UseCases::CreateIncomeTransaction,
       params: INCOME_PARAMS
@@ -52,11 +54,17 @@ class Api::V1::TransactionsController < ApplicationController
     repos = type[:repositories]
     repos = repos.each_with_object({}) { |(key, repo), hash| hash[key] = repo.new }
     transaction_params = transaction_params(key, type[:params])
-    type[:use_case].new(repositories: repos).call(params: transaction_params)
+    type[:use_case].
+      new(repositories: repos).
+      call(params: transaction_params)
   end
 
   def bad_request(exception)
     render json: { error: exception.message }, status: :bad_request
+  end
+
+  def unprocessable_content(exception)
+    render json: { errors: exception.errors }, status: :unprocessable_content
   end
 
   def transaction_params(key, type_params)

@@ -7,12 +7,15 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       let(:repo) { IncomeRepo.new }
       let(:params) { { amount: 100 } }
+      let(:validator) { instance_double(Finances::Validators::IncomeTransactions, validate!: nil)}
       subject do
+        # TODO: payment_method_repo must be required
         described_class.
           new(
             repositories: {
               income_transaction_repository: repo
-            }
+            },
+            validator: validator
           ).
           call(params: params)
       end
@@ -29,7 +32,7 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       context 'when params are invalid' do
         class MockedError < StandardError; end
-        before { allow(repo).to receive(:create).and_raise(MockedError) }
+        before { allow(validator).to receive(:validate!).and_raise(MockedError) }
 
         it 'raises an error' do
           expect { subject }.to raise_error(MockedError)
