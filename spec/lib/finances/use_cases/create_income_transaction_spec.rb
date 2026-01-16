@@ -47,7 +47,8 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
         described_class.
           new(
             repositories: {
-              income_transactions_repository: repo
+              income_transaction_repository: repo,
+              payment_method_repository: repo
             }
           ).
           call(params: nil)

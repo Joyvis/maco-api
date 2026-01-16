@@ -3,10 +3,11 @@ module Transactions
 
   class IncomesRepository < Finances::Repositories::IncomeTransactions
     def create(income_params)
-      income = Income.create_transaction!(income_params)
+      income = Income.new(income_params)
+      income.save!(validate: false)
 
       ENTITY.new(income.attributes)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::NotNullViolation => e
       raise InvalidIncomeError, e.full_message
     end
 

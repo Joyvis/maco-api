@@ -1,13 +1,17 @@
 class UseCase
   class RepositoryNotImplementedError < StandardError; end
+  class MissingRepositoryError < StandardError; end
   class NotDefinedInterface < StandardError; end
 
   attr_accessor :validator
 
   def initialize(repositories:, validator: nil)
+    unless (repositories.keys - self.class::REPOSITORIES.keys).empty?
+      raise MissingRepositoryError
+    end
+
     repositories.each do |key, klass|
       repository = self.class::REPOSITORIES[key]
-      next if klass.nil?
 
       unless repository
         raise RepositoryNotImplementedError, "REPOSITORIES not defined"
