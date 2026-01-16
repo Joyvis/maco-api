@@ -24,19 +24,21 @@ class UseCase
       instance_variable_set("@#{key}", klass)
     end
 
-    @validator = validator || build_validator
+    @validator = validator
+  end
+
+  def validator
+    @validator || build_validator
   end
 
   def build_validator
-    return if self.class == Finances::UseCases::CreateExpenseTransaction
-
     self.class::VALIDATOR[:class].new(**validator_args)
   end
 
   def validator_args
     args = {}
-    self.class::VALIDATOR[:repositories].each do |repo|
-      args[repo] = send(repo)
+    self.class::VALIDATOR[:entities].each do |entity|
+      args[entity] = send(entity)
     end
 
     args

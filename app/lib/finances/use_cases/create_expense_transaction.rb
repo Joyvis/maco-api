@@ -12,16 +12,28 @@ module Finances
         },
         credit_account_payment_method_repository: {
           interface: Finances::Repositories::CreditAccountPaymentMethods,
-          message: "Invalid Invoice Repositoryk"
+          message: "Invalid Credit Account Repository"
+        },
+        transaction_category_repository: {
+          interface: Finances::Repositories::TransactionCategories,
+          message: "Invalid Category Repository"
         }
       }.freeze
 
+      VALIDATOR = {
+        class: Finances::Validators::ExpenseTransactions,
+        entities: [ :payment_method_entity, :transaction_category_entity ]
+      }
+
       attr_reader :expense_transaction_repository,
         :invoice_transaction_repository,
-        :credit_account_payment_method_repository
+        :credit_account_payment_method_repository,
+        :transaction_category_repository
 
       def call(params:)
-        payment_method = fetch_payment_method(params[:payment_method_id])
+        @params = params
+        validator.validate!(params)
+        payment_method = payment_method_entity
         if payment_method
           invoice = fetch_invoice(payment_method)
           invoice = create_invoice(payment_method, params) unless invoice
@@ -33,6 +45,20 @@ module Finances
       end
 
       private
+
+      def payment_method_entity
+        @payment_method_entity ||= fetch_payment_method(@params[:payment_method_id])
+      end
+
+      def transaction_category_entity
+        @transaction_category_entity ||= fetch_transaction_category(@params[:category_id])
+      end
+
+      def fetch_transaction_category(uuid)
+        transaction_category_repository.find_by_id(uuid)
+      rescue Repositories::TransactionCategories::NotFoundError
+        nil
+      end
 
       def fetch_payment_method(uuid)
         credit_account_payment_method_repository.find_by_id(uuid)

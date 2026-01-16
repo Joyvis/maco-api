@@ -16,14 +16,21 @@ module Finances
 
       VALIDATOR = {
         class: Finances::Validators::IncomeTransactions,
-        repositories: [ :payment_method_repository ]
+        entities: [ :payment_method_entity ]
       }
 
       attr_accessor :income_transaction_repository, :payment_method_repository
 
       def call(params:)
+        @params = params
         validator.validate!(params)
         income_transaction_repository.create(params)
+      end
+
+      private
+
+      def payment_method_entity
+        @payment_method_entity ||= payment_method_repository.find_by_id(@params[:payment_method_id])
       end
     end
   end

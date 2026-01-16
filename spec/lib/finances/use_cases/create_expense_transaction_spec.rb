@@ -5,10 +5,12 @@ RSpec.describe Finances::UseCases::CreateExpenseTransaction do
     class ExpenseRepo < Finances::Repositories::ExpenseTransactions; end
     class InvoiceRepo < Finances::Repositories::InvoiceTransactions; end
     class CreditAccountRepo < Finances::Repositories::CreditAccountPaymentMethods; end
+    class TransactionCategoryRepo < Finances::Repositories::TransactionCategories; end
 
     let(:expense_transaction_repo) { ExpenseRepo.new }
     let(:invoice_transaction_repo) { InvoiceRepo.new }
     let(:credit_account_payment_method_repo) { CreditAccountRepo.new }
+    let(:transaction_category_repo) { TransactionCategoryRepo.new }
 
     subject do
       described_class.
@@ -16,7 +18,8 @@ RSpec.describe Finances::UseCases::CreateExpenseTransaction do
           repositories: {
             expense_transaction_repository: expense_transaction_repo,
             credit_account_payment_method_repository: credit_account_payment_method_repo,
-            invoice_transaction_repository: invoice_transaction_repo
+            invoice_transaction_repository: invoice_transaction_repo,
+            transaction_category_repository: transaction_category_repo
           }
         ).call(params: params)
     end
@@ -29,10 +32,14 @@ RSpec.describe Finances::UseCases::CreateExpenseTransaction do
 
         allow(invoice_transaction_repo).
           to receive(:find_by).and_return(invoice_transaction)
+
+        allow(transaction_category_repo).
+          to receive(:find_by_id).and_return(transaction_category)
       end
 
       let(:credit_account_payment_method) { build_stubbed(:credit_account_payment_method_entity) }
       let(:invoice_transaction) { build_stubbed(:invoice_transaction_entity) }
+      let(:transaction_category) { build_stubbed(:transaction_category_entity) }
 
       let(:params) { attributes_for(:expense) }
 
