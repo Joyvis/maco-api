@@ -3,10 +3,11 @@ module Transactions
 
   class ExpensesRepository < Finances::Repositories::ExpenseTransactions
     def create(params)
-      expense = Expense.create!(params)
+      expense = Expense.new(params)
+      expense.save!(validate: false)
 
       ENTITY.new(expense.attributes)
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::NotNullViolation => e
       raise InvalidExpenseError, e.full_message
     end
 
