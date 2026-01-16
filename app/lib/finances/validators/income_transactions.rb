@@ -1,10 +1,10 @@
 module Finances
   module Validators
     class IncomeTransactions < Base
-      attr_reader :payment_method_repository
+      attr_reader :payment_method_entity
 
-      def initialize(payment_method_repository:)
-        @payment_method_repository = payment_method_repository
+      def initialize(payment_method_entity:)
+        @payment_method_entity = payment_method_entity
       end
 
       def validate(params)
@@ -18,8 +18,7 @@ module Finances
 
         # Business rules using repos
         payment_method_id = params[:payment_method_id]
-        if payment_method_id &&
-          !payment_method_repository.find_by_id(payment_method_id)
+        unless payment_method_id || payment_method_id == payment_method_entity.id
           errors << { payment_method_id: "Payment Method must exist" }
         end
 
