@@ -3,7 +3,7 @@ module Transactions
 
   class ExpensesRepository < Finances::Repositories::ExpenseTransactions
     def create(params)
-      expense = Expense.create_transaction!(params)
+      expense = Expense.create!(params)
 
       ENTITY.new(expense.attributes)
     rescue ActiveRecord::RecordInvalid => e

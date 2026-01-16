@@ -7,6 +7,10 @@ class UseCase
       repository = self.class::REPOSITORIES[key]
       next if klass.nil?
 
+      unless repository
+        raise RepositoryNotImplementedError, "REPOSITORIES not defined"
+      end
+
       unless klass.is_a?(repository[:interface])
         raise RepositoryNotImplementedError, repository[:message]
       end
