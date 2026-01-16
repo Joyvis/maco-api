@@ -27,7 +27,7 @@ class Api::V1::TransactionsController < ApplicationController
         expense_transaction_repository: Transactions::ExpensesRepository,
         invoice_transaction_repository: Transactions::InvoicesRepository,
         credit_account_payment_method_repository: PaymentMethods::CreditAccountsRepository,
-        # category_repository: TransactionCategoriesRepository
+        transaction_category_repository: TransactionCategoriesRepository
       },
       use_case: Finances::UseCases::CreateExpenseTransaction,
       params: EXPENSE_PARAMS

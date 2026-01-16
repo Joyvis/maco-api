@@ -2,6 +2,7 @@ module Finances
   module Repositories
     class TransactionCategories
       class NotImplementedError < StandardError; end
+      class NotFoundError < StandardError; end
 
       ENTITY = Entities::TransactionCategory
 

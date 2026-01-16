@@ -32,8 +32,6 @@ class UseCase
   end
 
   def build_validator
-    return if self.class == Finances::UseCases::CreateExpenseTransaction
-
     self.class::VALIDATOR[:class].new(**validator_args)
   end
 
