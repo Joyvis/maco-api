@@ -13,9 +13,11 @@ RSpec.describe Finances::UseCases::CreateExpenseTransaction do
     subject do
       described_class.
         new(
-          expense_transaction_repository: expense_transaction_repo,
-          credit_account_payment_method_repository: credit_account_payment_method_repo,
-          invoice_transaction_repository: invoice_transaction_repo
+          repositories: {
+            expense_transaction_repository: expense_transaction_repo,
+            credit_account_payment_method_repository: credit_account_payment_method_repo,
+            invoice_transaction_repository: invoice_transaction_repo
+          }
         ).call(params: params)
     end
 

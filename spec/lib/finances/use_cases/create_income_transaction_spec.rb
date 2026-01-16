@@ -7,7 +7,18 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       let(:repo) { IncomeRepo.new }
       let(:params) { { amount: 100 } }
-      subject { described_class.new(repository: repo).call(params: params) }
+      let(:validator) { instance_double(Finances::Validators::IncomeTransactions, validate!: nil) }
+      subject do
+        # TODO: payment_method_repo must be required
+        described_class.
+          new(
+            repositories: {
+              income_transaction_repository: repo
+            },
+            validator: validator
+          ).
+          call(params: params)
+      end
 
       context 'when params are valid' do
         before { allow(repo).to receive(:create).and_return(transaction) }
@@ -21,7 +32,7 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       context 'when params are invalid' do
         class MockedError < StandardError; end
-        before { allow(repo).to receive(:create).and_raise(MockedError) }
+        before { allow(validator).to receive(:validate!).and_raise(MockedError) }
 
         it 'raises an error' do
           expect { subject }.to raise_error(MockedError)
@@ -32,12 +43,21 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
     context 'when repo does not implement the correct interface' do
       class WrongIncomeRepo; end
       let(:repo) { WrongIncomeRepo.new }
-      subject { described_class.new(repository: repo).call(params: nil) }
+      subject do
+        described_class.
+          new(
+            repositories: {
+              income_transaction_repository: repo,
+              payment_method_repository: repo
+            }
+          ).
+          call(params: nil)
+      end
 
       it 'it raises an exception' do
         expect { subject }
           .to raise_error(
-            Finances::UseCases::CreateIncomeTransaction::RepositoryNotImplementedError
+            UseCase::RepositoryNotImplementedError
           )
       end
     end

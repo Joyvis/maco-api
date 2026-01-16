@@ -1,20 +1,29 @@
 module Finances
   module UseCases
-    class CreateIncomeTransaction
+    class CreateIncomeTransaction < UseCase
       class RepositoryNotImplementedError < StandardError; end
 
-      attr_reader :repository
+      REPOSITORIES = {
+        income_transaction_repository: {
+          interface: Finances::Repositories::IncomeTransactions,
+          message: "Invalid Income Repository"
+        },
+        payment_method_repository: {
+          interface: Finances::Repositories::PaymentMethods,
+          message: "Invalid Income Repository"
+        }
+      }.freeze
 
-      def initialize(repository:)
-        unless repository.is_a? Finances::Repositories::IncomeTransactions
-          raise RepositoryNotImplementedError
-        end
+      VALIDATOR = {
+        class: Finances::Validators::IncomeTransactions,
+        repositories: [ :payment_method_repository ]
+      }
 
-        @repository = repository
-      end
+      attr_accessor :income_transaction_repository, :payment_method_repository
 
       def call(params:)
-        repository.create(params)
+        validator.validate!(params)
+        income_transaction_repository.create(params)
       end
     end
   end
