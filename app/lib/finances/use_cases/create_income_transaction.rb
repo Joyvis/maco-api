@@ -16,7 +16,7 @@ module Finances
 
       VALIDATOR = {
         class: Finances::Validators::IncomeTransactions,
-        repositories: [:payment_method_repository]
+        repositories: [ :payment_method_repository ]
       }
 
       attr_accessor :income_transaction_repository, :payment_method_repository

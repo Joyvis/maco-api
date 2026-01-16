@@ -8,7 +8,7 @@ class PaymentMethodsRepository < Finances::Repositories::PaymentMethods
   end
 
   def to_entity(payment_method)
-    return CREDIT_ACCOUNT_ENTITY.new(payment_method.attributes) if payment_method.type == 'CreditAccount'
+    return CREDIT_ACCOUNT_ENTITY.new(payment_method.attributes) if payment_method.type == "CreditAccount"
 
     DEBIT_ACCOUNT_ENTITY.new(payment_method.attributes)
   end

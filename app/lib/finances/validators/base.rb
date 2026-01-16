@@ -21,5 +21,3 @@ module Finances
     end
   end
 end
-
-

@@ -7,7 +7,7 @@ RSpec.describe Finances::UseCases::CreateIncomeTransaction do
 
       let(:repo) { IncomeRepo.new }
       let(:params) { { amount: 100 } }
-      let(:validator) { instance_double(Finances::Validators::IncomeTransactions, validate!: nil)}
+      let(:validator) { instance_double(Finances::Validators::IncomeTransactions, validate!: nil) }
       subject do
         # TODO: payment_method_repo must be required
         described_class.
