@@ -1,9 +1,9 @@
 module Finances
   module Repositories
-    class Categories
+    class TransactionCategories
       class NotImplementedError < StandardError; end
 
-      ENTITY = Entities::Category
+      ENTITY = Entities::TransactionCategory
 
       def find_by_id(uuid)
         raise NotImplementedError, "find_by_id method must be implement"

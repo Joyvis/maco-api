@@ -14,8 +14,8 @@ module Finances
           interface: Finances::Repositories::CreditAccountPaymentMethods,
           message: "Invalid Invoice Repository"
         },
-        # category_repository: {
-        #   interface: Finances::Repositories::Categories,
+        # transaction_category_repository: {
+        #   interface: Finances::Repositories::TransactionCategories,
         #   message: "Invalid Category Repository"
         # }
       }.freeze
