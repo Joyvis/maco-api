@@ -12,13 +12,18 @@ module Finances
         },
         credit_account_payment_method_repository: {
           interface: Finances::Repositories::CreditAccountPaymentMethods,
-          message: "Invalid Invoice Repositoryk"
-        }
+          message: "Invalid Invoice Repository"
+        },
+        # category_repository: {
+        #   interface: Finances::Repositories::Categories,
+        #   message: "Invalid Category Repository"
+        # }
       }.freeze
 
       attr_reader :expense_transaction_repository,
         :invoice_transaction_repository,
-        :credit_account_payment_method_repository
+        :credit_account_payment_method_repository,
+        :category_repository
 
       def call(params:)
         payment_method = fetch_payment_method(params[:payment_method_id])
