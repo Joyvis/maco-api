@@ -92,13 +92,7 @@ jobs:
           token: ${{ secrets.DEPLOY_PAT }}
           repository: Joyvis/maco-operations
           event-type: deploy
-          client-payload: |
-            {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}",
-              "actor": "${{ github.actor }}",
-              "message": "${{ github.event.head_commit.message }}"
-            }
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "actor": "${{ github.actor }}", "message": ${{ toJSON(github.event.head_commit.message) }}}'
 
       - name: Deployment triggered
         run: |
