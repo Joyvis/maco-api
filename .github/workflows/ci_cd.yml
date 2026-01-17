@@ -86,18 +86,13 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Call a reusable workflow
-        uses: actions/checkout@v6
+        uses: Joyvis/maco-operations/.github/workflows/deploy.yml@main
         with:
-          repository: Joyvis/maco-operations/.github/workflows/deploy.yml@main
           action: deploy
-          token: ${{ secrets.DEPLOY_PAT }}
 
       - name: Deployment triggered
         run: |
           echo "✅ Deployment triggered in maco-operations"
-          echo ""
-          echo "Commit: ${{ github.sha }}"
-          echo "Branch: ${{ github.ref }}"
           echo ""
           echo "Check deployment status at:"
           echo "https://github.com/Joyvis/maco-operations/actions"
