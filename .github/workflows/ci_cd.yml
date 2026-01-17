@@ -80,16 +80,9 @@ jobs:
           bundle exec rspec spec
 
   deploy:
-    - name: Call a reusable workflow
-      needs: [scan_ruby, lint, test]
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      runs-on: ubuntu-latest
-      uses: Joyvis/maco-operations/.github/workflows/deploy.yml@main
-      with:
-        action: deploy
-      run: |
-        echo "✅ Deployment triggered in maco-operations"
-        echo ""
-        echo "Check deployment status at:"
-        echo "https://github.com/Joyvis/maco-operations/actions"
+    needs: [scan_ruby, lint, test]
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: Joyvis/maco-operations/.github/workflows/deploy.yml@main
+    with:
+      action: deploy
 
