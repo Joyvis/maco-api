@@ -85,8 +85,8 @@ jobs:
     needs: [scan_ruby, lint, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v6
       - name: Call a reusable workflow
+        uses: actions/checkout@v6
         with:
           repository: Joyvis/maco-operations/.github/workflows/deploy.yml@main
           action: deploy
