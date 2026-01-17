@@ -81,7 +81,7 @@ jobs:
 
   deploy:
     needs: [scan_ruby, lint, test]
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: Joyvis/maco-operations/.github/workflows/deploy.yml@main
     with:
       action: deploy
