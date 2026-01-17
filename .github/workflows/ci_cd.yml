@@ -85,13 +85,12 @@ jobs:
     needs: [scan_ruby, lint, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Call a reusable workflow
-        uses: Joyvis/maco-operations/.github/workflows/deploy.yml@main
         with:
+          repository: Joyvis/maco-operations/.github/workflows/deploy.yml@main
           action: deploy
-        secrets:
-          my_secret: ${{ secrets.DEPLOY_PAT }}
+          token: ${{ secrets.DEPLOY_PAT }}
 
       - name: Deployment triggered
         run: |
